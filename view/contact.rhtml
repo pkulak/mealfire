@@ -1,0 +1,54 @@
+<style type="text/css" media="screen">
+  #main_content input.submit_button {
+    display: block;
+    margin-top: 10px;
+  }
+  #main_content textarea {
+    width: 50%;
+    height: 100px;
+  }
+  #main_content p {
+    margin-top: 0;
+  }
+  #main_content table {
+    margin-bottom: 5px;
+  }
+  td {
+    padding: 3px 5px;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    var symbol = '@';
+    var email = 'support' + symbol + 'mealfire.com';
+    
+    $('#mailto').attr('href', 'mailto:' + email).text(email);
+  });
+</script>
+
+<div id="sub_header">
+  <h1>Contact</h1>
+</div>
+
+<div id="main_content">
+  <p>Please use the form below if you have any comments or concerns about Mealfire.
+    Or, you can email us directly at <a id="mailto"></a>.</p>
+  
+  <form action="/contact" method="post">
+    <% if !current_user.authed? %>
+      <table>
+        <tr>
+          <td><label for="name">Name:</label></td>
+          <td><input type="text" name="name" id="name" value="<%= h request[:name] %>"/></td>
+        </tr><tr>
+          <td><label for="email">Email Address:</label></td>
+          <td><input type="text" name="email" id="email" value="<%= h request[:email] %>"/></td>
+        </tr>
+      </table>
+    <% end %>
+    
+    <textarea name="text"></textarea>
+    <input type="submit" value="submit" class="submit_button"/>
+  </form>
+</div>

@@ -1,0 +1,53 @@
+<style type="text/css" media="screen">
+  ul {
+    margin: 0 0 10px 0;
+  }
+  ul.category {
+    float: left;
+    width: 300px;
+  }
+  li.category_name {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-bottom: 5px;
+  }
+  li.ingredient {
+    margin-left: 0;
+    padding: 0 5px 0 37px;
+    position: relative;
+    text-indent: -20px;
+    cursor: pointer;
+  }
+</style>
+
+<div id="sub_header">
+  <h1>Categories</h1>
+</div>
+
+<div id="main_content">
+  <form method="post" action="/admin/categories?page=<%= current_page %>" style="margin-bottom:10px;">
+    <input type="text" name="expression" />
+    <select name="category">
+      <% Category.all.sort{|r,l| r.name <=> l.name}.each do |c| %>
+        <option value="<%= c.id %>"><%= c.name %></option>
+      <% end %>
+    </select>
+    <input type="submit" class="submit_button" value="Submit"/>
+  </form>
+  <% @categories.each do |cat| %>
+    <ul class="category">
+      <li class="category_name"><%= cat.name %></li>
+      <li>
+        <ul>
+          <% cat.children.each do |child| %>
+            <li>
+              <%= ingredient_to_html(child, :html_fraction => true, :ceiling => true, :ignore_description => true) %>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    </ul>
+  <% end %>
+  <div style="clear:both;"></div>
+  <%= pagination_arrows(@last_ingredients, 'ingredient') %>
+</div>

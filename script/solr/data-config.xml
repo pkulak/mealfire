@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataConfig>
+  <dataSource type="JdbcDataSource" 
+      driver="com.mysql.jdbc.Driver"
+      url="jdbc:mysql://localhost/mealfire" 
+      user="mealfire" 
+      password="meals4me&amp;u"/>
+  <document>
+    <entity name="recipe"
+        transformer="HTMLStripTransformer" 
+        query="select id, name, user_id, directions, imported_from, is_public from recipes where ('${dataimporter.request.clean}' != 'false' or updated_at &gt; '${dataimporter.last_index_time}') and side_dish = 0 and deleted = 0">
+      <field column="directions" stripHTML="true"/>
+      <entity name="tags"
+          query="select group_concat(name separator &quot; &quot;) as tag_name from tags t inner join recipe_tags rt on t.id = rt.tag_id where rt.recipe_id = ${recipe.id}"/>
+      <entity name="ingredients"
+          query="select group_concat(food separator &quot; &quot;) as food from ingredients i inner join ingredient_groups ig on i.ingredient_group_id = ig.id where ig.recipe_id = ${recipe.id}"/>
+    </entity>
+  </document>
+</dataConfig>

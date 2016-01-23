@@ -1,0 +1,49 @@
+<% @body_class = 'user_index' %>
+
+<!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+    li.recipe h2 span {
+      margin-top: -17px !important;
+    }
+    li.recipe h2 {
+      margin-top: 8px !important;
+    }
+  </style>
+<![endif]-->
+
+<div id="sub_header">
+  <h1><%= h @user.name %>'s Recipes</h1>
+</div>
+
+<div id="main_content">
+  <% if @recipes.length > 0 %>
+    <ul class="recipe_list">
+      <% @recipes.each do |recipe| %>
+        <li class="separated_list recipe">
+          <%= date_box(recipe.created_at) %>
+          <a href="<%= recipe.public_url %>" <% if recipe.is_imported %> target="top" <% end %>>
+            <img src="<%= recipe.image_url(:thumb) %>" class="small_recipe_image">
+          </a>
+          <h2>
+            <a href="<%= recipe.public_url %>" <% if recipe.is_imported %> target="top" <% end %> class="recipe_name"><%= recipe.name %></a>
+            <span style="font-weight:normal;">
+              <a href="http://<%= h try_host(recipe.imported_from) %>"><%= h try_host(recipe.imported_from) %></a>
+            </span>
+          </h2>
+          <div class="recipe_info" style="margin-left:40px;">
+            <% if recipe.recipe_tags.length > 0 %>
+              <ul class="tags with_tag_image">
+                <% Tag.sort_tags(recipe.recipe_tags.collect(&:tag), @user_tags).each do |t| %>
+                  <li><%= h t.name %></li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <%= pagination_arrows(@recipes, 'recipe', @make_path) %>
+  <% else %>
+    <p style="margin-left:10px;"><%= h @user.name %> isn't sharing any recipes yet. Check back soon!</p>
+  <% end %>
+</div>

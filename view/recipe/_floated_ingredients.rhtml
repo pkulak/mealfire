@@ -1,0 +1,55 @@
+<style type="text/css" media="all">
+  div.ingredient_group {
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  li.ingredient {
+    list-style: decimal;
+    margin-top: 2px;
+  }
+  ol {
+    padding-left: 20px;
+  }
+  ol ol {
+    padding-left: 0;
+  }
+  ol.blank_group {
+    margin-left: -10px;
+  }
+</style>
+
+<!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+    li.ingredient {
+      list-style: disc;
+    }
+  </style>
+<![endif]-->
+
+<ol>
+  <% first = true %>
+  <% @recipe.ingredient_groups.each do |grp| %>
+    <li style="list-style:none;">
+      <% if !first %>
+        <div style="clear:both;padding-top:5px;"></div>
+      <% end %>
+      <% if !grp.name.blank? %>
+        <div class="ingredient_group"><%= h grp.name %></div>
+      <% end %>
+      <ol class="<%= grp.name.blank? ? 'blank_group' : '' %>">
+        <div style="float:left;width:45%;margin-left:20px;">
+        <% grp.ingredients.first_half.each do |i| %>
+          <li class="ingredient"><%= ingredient_to_html(i, :html_fraction => true, :all_fractions => true) %></li>
+        <% end %>
+        </div>
+        <div style="float:right;width:45%;">
+        <% grp.ingredients.last_half.each do |i| %>
+          <li class="ingredient"><%= ingredient_to_html(i, :html_fraction => true, :all_fractions => true) %></li>
+        <% end %>
+        </div>
+      </ol>
+    </li>
+    <% first = false %>
+  <% end %>
+</ol>
+<div style="clear:both;"></div>

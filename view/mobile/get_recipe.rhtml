@@ -1,0 +1,29 @@
+<h1>Ingredients</h1>
+
+<div id="ingredients">
+  <ul>
+    <% @recipe.ingredient_groups.each do |grp| %>
+      <% if !grp.name.blank? %>
+        <li class="ingredient_group"><div><%= h grp.name %></div>
+          <ul>
+      <% end %>
+      <% grp.ingredients.each do |i| %>
+        <li class="ingredient">
+          <%= ingredient_to_html(i,
+              :html_fraction => true,
+              :multiplier => @recipe_day ? @recipe_day.multiplier : 1) %>
+        </li>
+      <% end %>
+      <% if !grp.name.blank? %>
+          </ul>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
+<h2 style="margin-top:20px;">Cooking Directions</h2>
+
+<div id="cooking_directions">
+  <%= @recipe.directions %>
+</div>

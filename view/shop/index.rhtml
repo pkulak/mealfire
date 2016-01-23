@@ -1,0 +1,144 @@
+<% use_javascript('dropdown') %>
+
+<style type="text/css" media="screen">
+  td {
+    padding: 2px 0;
+  }
+  td.dropdown img {
+    margin-right: 5px;
+    margin-bottom: -1px;
+  }
+  td.ordinal {
+    padding-right: 7px;
+  }
+  td.text {
+    padding-right: 50px;
+  }
+  td.time {
+    font-size: 11px;
+    color: #aaa;
+  }
+</style>
+
+<style type="text/css" media="print">
+  #header,
+  #sub_header,
+  #main_content td.dropdown,
+  #main_content td.time {
+    display: none;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    setupDropdowns();
+  });
+  
+  function setupDropdowns() {
+    $.each($('#main_content tr'), function() {
+      var tr = $(this);
+      
+      new Mealfire.Dropdown({
+        element: tr.find('img'),
+        parent: tr,
+        items: [{
+          text: 'Remove',
+          click: function() {
+            $.post('/shop/remove_item', {id: tr.attr('id')}, function(data) {
+              tr.fadeOut('slow', function() {
+                $('#items_holder').html(data);
+                setupDropdowns();
+              });
+            });
+          }
+        },{
+          text: "Edit",
+          click: function() {
+            var form = $('<input style="width:100%;" type="text" id="edit_input"/>')
+              .val(tr.find('td.text').text());
+            
+            new Mealfire.Popup({
+          	  width: 400,
+          	  height: 150,
+          	  title: "Edit Item",
+          	  data: form,
+          	  buttons: Mealfire.Buttons.standard(function(popup) {
+          	    var data = {text: form.val(), id: tr.attr('id')};
+          	    $('#items_holder').load('/shop/edit_item', data, function(data) {
+          	      popup.close();
+          	      setupDropdowns();
+          	      highlightNewItems();
+          	    });
+          	  })
+          	});
+          }
+        }]
+      });
+    });
+  }
+
+  function highlightNewItems() {
+    $('#main_content .highlight').effect("highlight", {}, 3000);
+  }
+
+  function addItems() {
+    var form = $('<div></div>');
+    form.append('<p style="margin-top:0;">Type your items to add below, one per line.</p>');      
+    form.append('<textarea style="width:100%;height:110px;" id="ingredients_input"></textarea>');
+    
+    new Mealfire.Popup({
+  	  width: 400,
+  	  height: 250,
+  	  title: "Add Items",
+  	  data: form,
+  	  buttons: Mealfire.Buttons.standard(function(popup) {
+  	    var data = {text: $("#ingredients_input").val()};
+  	    $('#items_holder').load('/shop/add_items', data, function(data) {
+  	      popup.close();
+  	      setupDropdowns();
+  	      highlightNewItems();
+  	    });
+  	  })
+  	});
+  }
+  
+  function clearItems() {
+    new Mealfire.Popup({
+      title: "Clear Items",
+      height: 125,
+      width: 425,
+      data: "This will clear <b>all</b> the items from your shopping list. Continue?",
+      buttons: [{
+        text: "Cancel",
+        click: function(popup) {
+          popup.close();
+          return false;
+        }
+      },{
+        text: "Yes, clear my shopping list!",
+        click: function(popup) {
+          popup.loading();
+          $.post('/shop/remove_all', function() {
+            popup.close();
+            $('#items_holder').html('');
+          });
+          return false;
+        }
+      }]
+    });
+  }
+</script>
+
+<div id="sub_header">
+  <a class="submit_button" href="/shop/show">Print List</a>
+  <a class="submit_button" style="margin-right:10px" href="javascript:clearItems();">Clear List</a>
+  <a class="submit_button" style="margin-right:10px" href="javascript:addItems();">Add Items</a>
+  <h1>Extra Items</h1>
+</div>
+
+<div id="main_content">
+  <p style="margin-top:0;">Items here will be automatically added to any shopping lists you create.</p>
+  <div id="items_holder">
+    <%= render_view :_item_list, :items => @items %>
+  </div>
+</div>

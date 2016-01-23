@@ -1,0 +1,82 @@
+<div id="home" selected="true" class="edgetoedge form">
+    <div class="toolbar">
+        <h1>Mealfire</h1>
+    </div>
+    <ul class="edgetoedge">
+        <li><a href="#saved_lists">Saved Lists</a></li>
+        <li><a href="#recipes" id="recipes_link">Recipes</a></li>
+        <li><a href="#extra" id="shopping_list_link">Extra Items</a></li>
+        <li><a href="#add_item" id="add_item_link" class="slideup">Add Extra Item</a></li>
+    </ul>
+</div>
+
+<div id="recipes" class="edgetoedge form">
+    <div class="toolbar">
+        <a href="#" class="back button">Home</a>
+        <h1>Recipes</h1>
+    </div>
+    <ul id="recipes_holder" class="edgetoedge"></ul>
+</div>
+
+<div id="recipe" class="edgetoedge">
+  <div class="toolbar">
+      <a href="#" class="back button">Recipes</a>
+      <h1 id="recipe_title"></h1>
+  </div>
+  <div id="recipe_holder"></div>
+</div>
+
+<div id="extra" class="edgetoedge">
+  <div class="toolbar">
+      <a href="#home" id="extras_home_button" class="back button">Home</a>
+      <a href="#add_item" id="add_extras_button" class="button slideup" style="float:right;">Add</a>
+      <a href="#" class="button" id="edit_extras_button" style="float:right;margin-right:45px;">Edit</a>
+      <h1>Extras</h1>
+  </div>
+  <ul id="shopping_list_holder">
+  </ul>
+</div>
+
+<div id="add_item" class="edit">
+  <form>
+    <div class="toolbar">
+        <a href="#" class="back button">Cancel</a>
+        <h1>Add Item</h1>
+    </div>
+    <ul>
+      <li><input type="text" id="item" placeholder="Item"/></li>
+    </ul>
+    <a href="#" class="whiteButton" id="add_item_button" style="margin: 10px">Submit</a>
+  </form>
+</div>
+
+<div id="saved_lists" class="edgetoedge">
+  <div class="toolbar">
+      <a href="#" class="back button">Home</a>
+      <h1>Saved Lists</h1>
+  </div>
+  <ul id="saved_lists_holder">
+  </ul>
+</div>
+
+<div id="saved_list" class="edgetoedge">
+  <div class="toolbar">
+      <a href="#" class="back button">All Lists</a>
+      <h1>Shopping List</h1>
+  </div>
+  <ul id="saved_list_holder">
+  </ul>
+</div>
+
+<div id="login" class="edit">
+  <form>
+      <div class="toolbar">
+          <h1>Mealfire Login</h1>
+      </div>
+      <ul>
+          <li><input type="text" id="email" placeholder="Email Address"/></li>
+          <li><input type="password" id="password" placeholder="Password"/></li>
+      </ul>
+      <a href="#" class="whiteButton" id="login_button" style="margin: 10px">Submit</a>
+  </form>
+</div>

@@ -1,0 +1,21 @@
+<% if @recipes.length > 0 %>
+  <% @recipes.each do |recipe| %>
+    <div id="recipe_<%= recipe.id %>" class="recipe_box in_panel">
+      <img src="/images/rb_left.png" class="left"/>
+      <div class="middle">
+        <%= h recipe.name %><!--[if lt IE 7]><span>&nbsp;</span><![endif]-->
+      </div>
+      <img src="/images/rb_right.png" class="right"/>
+    </div>
+  <% end %>
+  <div style="clear:both;"></div>
+<% else %>
+  <p style="margin:3px;">You don't have any recipes. <a href="/recipe/begin">Click here</a> to create one!</p>
+<% end %>
+
+<% if @recipes.length < 10 && !current_user.has_imported %>
+  <p style="margin-left:3px;">Want to collect recipes from all over the web? Grab the <a href="/bookmarklet">bookmarklet</a>:
+  <p style="text-align:center;margin-left:3px;">
+    <a class="submit_button" onclick="buttonClicked();return false;" href="javascript:<%= "var mealfireHost='localhost:7000';" if RACK_ENV == 'development' %>function%20loadScript(scriptURL)%20{%20var%20scriptElem%20=%20document.createElement('SCRIPT');%20scriptElem.setAttribute('language',%20'JavaScript');%20scriptElem.setAttribute('src',%20scriptURL);%20document.body.appendChild(scriptElem);}loadScript('http://<%= DOMAIN %>/js/bookmarklet.js?rand'+Math.random());void(0)">Save to Mealfire</a>
+  </p>
+<% end %>

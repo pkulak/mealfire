@@ -1,0 +1,22 @@
+sudo apt-get install build-essential git-core mysql-server memcached ruby1.9.1 ruby1.9.1-dev irb1.9.1 rubygems1.9.1 libmysql-ruby1.9.1 nginx imagemagick libmagickcore-dev libmagickwand-dev libxml2-dev libxslt1-dev
+sudo gem install --no-rdoc --no-ri rack thin ramaze json sequel erubis aws-s3 ri_cal tzinfo activesupport i18n solr-ruby rmagick nokogiri ruby-readability mysql memcache-client
+
+create database mealfire;
+grant all on mealfire.* to mealfire@localhost identified by 'password';
+
+git clone /var/git/mealfire.git
+
+sudo apt-get install libopenssl-ruby1.9.1
+
+sudo thin install
+sudo /usr/sbin/update-rc.d -f thin defaults
+sudo thin config -C /etc/thin/mealfire.yml -R config.ru -e production --servers 3
+
+cd /etc/nginx/sites-enabled
+sudo ln -s /home/rack/mealfire/script/mealfire.com .
+
+sudo apt-get install solr-jetty openjdk-6-jdk libmysql-java
+cd /usr/share/jetty/lib/ext
+sudo ln -s /usr/share/java/mysql-connector-java.jar .
+
+coffee -c -w --no-wrap -o public/js/ coffee/

@@ -1,0 +1,13 @@
+<script type="text/javascript" charset="utf-8">
+  function closeClicked() {
+    $.post("/close_warning", function() {
+      $('#top_banner').slideUp('fast');
+    });
+  }
+</script>
+
+<div id="top_banner">
+  <img class="close" onclick="closeClicked();" src="/images/close.jpg"/>
+  <h1 style="margin-right: 7px;">Welcome, guest!</h1>
+  Please <a href="/register">register</a> to save your changes.
+</div>

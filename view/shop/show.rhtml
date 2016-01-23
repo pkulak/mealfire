@@ -1,0 +1,294 @@
+<% use_javascript('dropdown') %>
+<% use_javascript('json') %>
+<% use_stylesheet('screen', 'all') %>
+
+<script type="text/javascript" charset="utf-8">
+  var categories = <%= Category.order(:name).all.collect{|c| {id: c.id, name: c.name}}.to_json %>;
+
+  <% if @saved_list %>
+    var saved_list_id = <%= @saved_list.id %>;
+  <% else %>
+    var saved_list_id = null;
+  <% end %>
+  
+  <% if @days %>
+    var days = <%= @days.to_json %>;
+  <% else %>
+    var days = null;
+  <% end %>
+
+  $(function() {
+    $.each($('li.ingredient'), function() {
+      setupIngredient($(this));
+    });
+  });
+    
+  function deleteList(id) {
+    new Mealfire.Popup({
+  	  width: 400,
+  	  height: 135,
+  	  title: "Really Delete List?",
+  	  data: 'Are you sure you want to delete this shopping list? This cannot be undone.',
+  	  buttons: [Mealfire.Buttons.cancel, {
+        text: 'Delete Shopping List',
+        click: function(popup) {
+          popup.close();
+          window.location = "/shop/delete/" + id;
+          return false;
+        }
+      }]
+  	});
+  }
+
+  function setupIngredient(element) {
+    element.click(function() {
+      var ul = element.closest('ul.category');
+      var food = element.find('span.food').text();
+      
+      if (element.hasClass("deleted")) {
+        ul.removeClass("deleted");
+        element.removeClass("deleted");
+        
+        if (saved_list_id) {
+          $.ajax({
+            url: '/shop/undelete_ingredient',
+            data: {list_id: saved_list_id, food: food}
+          });
+        }
+      } else {
+        element.addClass("deleted");
+        
+        if (ul.find('li:not(.deleted)').length == 2) {
+          ul.addClass("deleted");
+        }
+        
+        if (saved_list_id) {
+          $.ajax({
+            url: '/shop/delete_ingredient',
+            data: {list_id: saved_list_id, food: food}
+          });
+        }
+      }
+    });
+    
+    new Mealfire.Dropdown({
+      element: element.find('img'),
+      parent: element,
+      width: 125,
+      items: [{
+        text: 'Change Category',
+        click: function() {
+          var food = element.find('span.food').text();
+          var data = $('<div style="margin-top:5px;"></div>');
+          var select = $('<select style="margin-bottom:15px;"></select>');
+          var input = $('<input type="text" style="float:left;">').attr('value', food);
+
+          $.each(categories, function(i, cat) {
+            select.append($('<option></option>').attr('value', cat.id).text(cat.name));
+          });
+          
+          data.append('<label>New Category:</label>');
+          data.append(select);
+          data.append('<label>Expression*:</label>');
+          data.append(input);
+          data.append('<p>*Hint: to apply to other recipes as well, choose something succinct, i.e. "kielbasa" instead of "kielbasa cut into small pieces".</p>')
+
+          new Mealfire.Popup({
+            width: 400,
+            height: 210,
+            title: "Change Category",
+            data: data,
+            buttons: Mealfire.Buttons.standard(function(popup) {
+              $.ajax({
+                url: '/shop/change_category',
+                data: {food: food, expression: input.val(), category_id: select.val()},
+                complete: function() {
+                  window.location = "/shop/show?saved_list=" + saved_list_id;
+                }
+              });
+            })
+          });
+        }
+      }]
+    });
+  }
+  
+  <% if current_user.authed? %>
+    function emailList() {
+      var email = '<%= current_user.email %>';
+      var data = '<label style="margin-right:10px;color:#000;" for="email_input">Email list to:</label>';
+      data += '<input type="text" id="email_input" value="' + email + '"/>';
+    
+      new Mealfire.Popup({
+    	  width: 400,
+    	  height: 120,
+    	  title: "Email List",
+    	  data: data,
+    	  buttons: Mealfire.Buttons.standard(function(popup) {
+    	    var data = {text: serializeList(), email: $('#email_input').val()};
+    	    $.post('/shop/email', data, function(data) {
+    	      popup.close();
+    	    });
+    	  })
+    	});
+    }
+    
+    function serializeList() {
+      var categories = [];
+    
+      $.each($('ul.category:not(.deleted)'), function() {
+        var category = {}
+        category.name = $(this).find('li.category_name').text();
+        category.ingredients = [];
+      
+        $.each($(this).find('li.ingredient:not(.deleted)'), function() {
+          var ingredient = {}
+          var si = $(this).find('span.si');
+          var unit = $(this).find('span.unit');
+    
+          if (si.length > 0) ingredient.si = si.text();
+          if (unit.length > 0) ingredient.unit = unit.text();
+          
+          ingredient.food = $(this).find('span.food').text();
+          category.ingredients.push(ingredient);
+        });
+      
+        categories.push(category);
+      });
+    
+      return $.toJSON(categories);
+    }
+  <% else %>
+    function emailList() {
+      new Mealfire.Popup({
+    	  width: 400,
+    	  height: 120,
+    	  title: "Feature Not Available",
+    	  data: 'Only registered users can email shopping lists. <a href="/register">Click here</a> to sign up!',
+    	  buttons: Mealfire.Buttons.closeOnly()
+    	});
+    }
+  <% end %>
+</script>
+
+<style type="text/css" media="all">
+  body {
+    width: 700px;
+    text-align: left;
+    background-color: #fff;
+    margin: 10px;
+  }
+  ul {
+    margin: 0 0 10px 0;
+  }
+  ul.category {
+    width: 300px;
+  }
+  li.category_name {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-bottom: 5px;
+  }
+  li.ingredient {
+    margin-left: 0;
+    padding: 0 5px 0 37px;
+    position: relative;
+    text-indent: -20px;
+    cursor: pointer;
+  }
+  li.ingredient span.move {
+    font-size: 0.9em;
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  img.dropdown {
+    position: absolute;
+    left: 0;
+    top: 1px;
+  }
+  li.deleted {
+    text-decoration: line-through;
+    color: #888;
+  }
+  ul.deleted {
+    color: #888;
+  }
+  img.dropdown { cursor: pointer; }
+  div.dropdown_menu { border: 1px solid #2D6B42; background: #fff; text-align: left; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+  div.dropdown_menu div.item { cursor: pointer; padding: 1px 7px; }
+  div.dropdown_menu div.hover { background: #6ACAEA; }
+  div.dropdown_menu div.notFirst { border-top: 1px solid #2D6B42; }
+  div.dropdown_menu div.notClickable { cursor: default; }
+  #sources span { margin-right: 5px; }
+  #sources span span {
+    font-weight: bold;
+    margin-right: 2px;
+    font-size: 13px;
+  }
+  span.text span { font-size: 10px; }
+  .popup label {
+    width: 100px;
+    margin-bottom: 2px;
+    float: left;
+    padding-top: 2px;
+  }
+  .popup p {
+    font-size: 0.9em;
+    padding-top: 15px;
+    clear: both;
+  }
+</style>
+
+<style type="text/css" media="print">
+  .submit_button, .deleted, .directions {
+    display: none;
+  }
+</style>
+
+<% @categories.each do |half| %>
+  <div style="float:left;width:310px;">
+    <% half.each do |cat| %>
+      <ul class="category <%= 'deleted' if cat.deleted %>">
+        <li class="category_name"><%= cat.name %></li>
+        <li>
+          <ul class="ingredients">
+            <% cat.children.each do |child| %>
+              <li class="ingredient <%= 'deleted' if child.deleted %>">
+                <img class="dropdown" src="/images/options.png"/>
+                <% if child.quantity %>
+                  <span class="si" style="display:none;"><%= child.si || child.quantity %></span>
+                <% end %>
+                <% if child.unit %>
+                  <span class="unit" style="display:none;"><%= child.unit ? child.unit.abbr : '' %></span>
+                  <span class="type" style="display:none;"><%= child.unit ? child.unit.type : '' %></span>
+                <% end %>
+                <span class="food" style="display:none;"><%= h child.food %></span>
+                <span class="text">
+                  <%= ingredient_to_html(child, :html_fraction => true, :ceiling => true, :ignore_description => true) %>
+                  <span>(<%= @sources.indices_of(child.source).join(",") %>)</span>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+    <% end %>
+  </div>
+<% end %>
+
+<div style="clear:both;"></div>
+<p id="sources">
+  <% @sources.each_index do |i| %>
+    <span><span>(<%= i + 1 %>)</span><%= @sources[i] %></span>
+  <% end %>
+</p>
+<a href="<%= @recipe ? recipe_url(@recipe) : '/calendar' %>" class="submit_button">Go Back</a>
+<a href="javascript:window.print()" class="submit_button">Print</a>
+<a href="javascript:emailList()" class="submit_button">Email</a>
+<% if @saved_list %>
+  <a href="javascript:deleteList(<%= @saved_list.id %>)" class="submit_button">Delete</a>
+<% end %>
+
+<p class="directions">Click on all the items that you already have to remove them from the printed/emailed list.</p>

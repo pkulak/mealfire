@@ -1,0 +1,163 @@
+<% use_javascript('dropdown') %>
+<% use_javascript('recipe') %>
+<% use_javascript('tiny_mce/jquery.tinymce') %>
+<% use_javascript('jquery.url.packed') %>
+<% use_javascript('jquery.autocomplete') %>
+<% use_stylesheet('jquery.autocomplete') %>
+<% use_stylesheet('smoothness/jquery-ui-1.7.2.custom') %>
+<% @body_class = 'edit_recipe' %>
+<% @body_recipe = true %>
+
+<!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+    #new_tag_submit {
+      width: 60px;
+    }
+    #sub_header {
+      line-height: 18px;
+    }
+    #sub_header #buttons_holder {
+      margin-top: -1px;
+    }
+  </style>
+<![endif]-->
+
+<script type="text/javascript" charset="utf-8">
+  var recipe_id = <%= @recipe.id %>;
+  var authed_user = <%= current_user.authed? ? "true" : "false" %>;
+  var multiplier = <%= @multiplier %>;
+  var recipeName = '<%= js_escape(@recipe.name) %>';
+  
+  $(function() {
+    $('#new_tag_input').autocomplete([
+      <%= @autocomplete_tags %>
+    ]);
+  });
+</script>
+
+<% if request[:from_import] && !current_user.authed? %>
+  <script type="text/javascript" charset="utf-8">
+    new Mealfire.DynamicPopup({
+      title: "Not Logged In",
+      data: "You are currently not logged into Mealfire, so this recipe was " +
+        "imported into a guest account. If you're a registered Mealfire user, " +
+        "you can login now to save this recipe to your account.",
+      buttons: [{
+        text: "Yes, login now",
+        click: function(popup) {
+          window.location = '/recipe/login_to_save?id=<%= @recipe.id %>';
+          return false;
+        }},{
+          text: "Register",
+          click: function(popup) {
+            window.location = '/register';
+            return false;
+        }},{
+        text: "Close",
+        click: function(popup) {
+          popup.close();
+          return false;
+        }}
+      ]
+    });
+  </script>
+<% end %>
+
+<div id="sub_header">
+  <div id="buttons_holder">
+    <%= render_partial('_buttons') %>
+  </div>
+  <h1 id="recipe_title_header" itemprop="name"><%= h @recipe.name %></h1>
+</div>
+
+<div id="main_content">
+  <div style="float:left;width:500px;">
+    <div id="ingredients" class="section_box">
+      <h2>
+        <a href="javascript:addIngredients();" id="add_ingredients_button" class="small submit_button" style="float:right">add ingredients</a>
+        <div style="float:left;">Ingredients</div>
+        <div class="multipliers" style="float:left;margin-left:5px;">
+          <a href="<%= recipe_url(@recipe, multiplier: 0.5) %>" class="multiplier <%= 'selected' if @multiplier == 0.5 %>">&#189;x</a>
+          <a href="<%= recipe_url(@recipe, multiplier: 1) %>" class="multiplier <%= 'selected' if @multiplier == 1 %>">1x</a>
+          <a href="<%= recipe_url(@recipe, multiplier: 2) %>" class="multiplier <%= 'selected' if @multiplier == 2 %>">2x</a>
+          <a id="custom-multiplier" href="" onclick="return false;" class="multiplier <%= 'selected' unless [0.5, 1, 2].include?(@multiplier) %>">?</a>
+        </div>
+        <div style="clear:both;"></div>
+      </h2>
+    
+      <div class="section_content" style="padding-left:3px;">
+        <div id="ingredient_holder">
+          <%= render_partial('_ingredient_list/' + @recipe.id.to_s) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section_box" style="margin-top:20px;">
+      <h2>
+        <div style="float:left">Cooking Directions</div>
+        <a href="javascript:addDirections();" id="add_directions_button" class="small submit_button" style="float:right;"><%= @recipe.directions.blank? ? 'add' : 'edit' %> directions</a>
+        <div style="clear:both;"></div>
+      </h2>
+
+      <div class="section_content">
+        <div itemprop="instructions" id="directions_holder" class="no_styles"><%= render_partial('_directions/' + @recipe.id.to_s) %></div>
+        <% if @recipe.imported_from %>
+          <p>From: <a href="<%= h @recipe.imported_from %>"><%= h try_host(@recipe.imported_from) %></a></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div style="float:right;width:250px;">
+    <% if @recipe.has_image %>
+      <div style="text-align:center;">
+        <img src="<%= @recipe.image_url %>" id="recipe_image" itemprop="photo" style="margin-bottom:10px;"/>
+      </div>
+    <% end %>
+  
+    <div class="section_box" <% if @recipe.has_image %>style="margin-top:10px;"<% end %>>
+      <h2>Tags</h2>
+      <div class="section_content">
+        New tag: <input id="new_tag_input" type="text" style="width:100px;"/>
+        <input id="new_tag_submit" type="submit" class="submit_button" value="submit"/>
+        <div style="margin-top:10px;">Current tags on this recipe:</div>
+        <div id="tags_holder">
+          <%= render_view(:_tag_list, :recipe => @recipe) %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section_box" style="margin-top:20px;">
+      <h2>Settings</h2>
+      <div class="section_content">
+        <table class="settings">
+          <tr>
+            <td><input id="public-private-checkbox" type="checkbox" <%= 'checked' if @recipe.is_public %>></td>
+            <td>Show this recipe on your <a href="/user/<%= current_user.id %>">profile</a>.</td>
+          </tr><tr>
+            <td><input id="show-hide-checkbox" type="checkbox" <%= 'checked' if !@recipe.hidden %>></td>
+            <td style="white-space:nowrap">Show this recipe on your <a href="/calendar">calendar</a>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    
+    <% if @recipe.shares.length > 0 %>
+      <div class="section_box" style="margin-top:20px;">
+        <h2 style="float:right">Hits</h2>
+        <h2>Shares</h2>
+        <div class="section_content">
+          <table class="shares">
+            <% @recipe.shares.each do |share| %>
+              <tr>
+                <td><%= share.recipient %></td>
+                <td><%= share.hit_count %></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+    <% end %>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>

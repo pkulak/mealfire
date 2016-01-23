@@ -1,0 +1,46 @@
+<% use_javascript 'store.new' %>
+<% @body_class = 'new_store' %>
+<% @title = @store ? 'Edit Store' : 'New Store' %>
+
+<script type="text/javascript" charset="utf-8">
+  var store_id = <%= @store ? @store.id : 'null' %>;
+</script>
+
+<div id="sub_header">
+  <% if @store %>
+    <a id="delete_button" class="submit_button">Delete Store</a>
+  <% end %>
+  <h1><%= @title %></h1>
+</div>
+
+<form id="main_content" method="post">
+  <input type="hidden" name="category_order" id="category_order" value="">
+  
+  <ol class="steps first">
+    <li>
+      <p class="first">First, drag and drop the categories below to best match the layout of this store.</p>
+  
+      <ul id="categories" style="margin-bottom:2em;">
+        <% @categories.each do |cat| %>
+          <li>
+            <div style="display:none;" class="category_id"><%= cat.id %></div>
+            <div class="category"><%= cat.name %></div>
+            <div style="clear:both;"></div>
+          </li>
+        <% end %>
+      </ul>
+    </li>
+    <li>
+      <% if @store %>
+        <p>Now, check over your name for this store:</p>
+      <% else %>
+        <p>Now, type a name for the new store:</p>
+      <% end %>
+      <input type="text" id="store_name" name="store_name" value="<%= @store.name if @store %>" style="width:300px;">
+    </li>
+    <li>
+      <p>When you're done, click below to finish.</p>
+      <input type="submit" class="submit_button" value="<%= @store ? "Save Store" : "Create Store" %>">
+    </li>
+  </ul>
+</form>

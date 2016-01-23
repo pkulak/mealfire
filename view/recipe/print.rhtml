@@ -1,0 +1,31 @@
+<% use_stylesheet('screen', 'all') %>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {window.print();})
+</script>
+
+<style media="all">
+  body {
+    width: 700px;
+    text-align: left;
+    background-color: #fff;
+    margin: 10px;
+  }
+  h2 {
+    font-size: 1.2em;
+  }
+  h1 {
+    font-size: 1.4em;
+    text-align: center;
+  }
+</style>
+
+<h1><%= h @recipe.name %></h1>
+
+<h2 style="margin-top:0;">Ingredients <%= "(" + @friendly_multiplier + ")" if request[:multiplier] %></h2>
+
+<%= render_view :_floated_ingredients, :recipe => @recipe %>
+
+<h2 style="margin-top:20px;;">Cooking Directions</h2>
+
+<div id="directions_holder" style="padding-left:20px;"><%= @recipe.directions %></div>

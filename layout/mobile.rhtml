@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html manifest="mealfire.manifest">
+  <head>
+    <title>Mealfire <%= @title ? ' - ' + @title : '' %></title>
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="expires" content="0" />
+    <meta name="generator" content="Ramaze #{Ramaze::VERSION}" />
+    <meta name="author" content="Phil Kulak" />
+    <meta name="date" content="#{Time.now.iso8601}" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jqtouch.min.js"></script>
+    <script type="text/javascript" src="/js/mobile.js"></script>
+    <link rel="stylesheet" href="/css/jqtouch.min.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/jqtouch.theme.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/mobile.css" type="text/css" media="screen">
+  </head>
+  <body>
+    <%= @content %>
+  </body>
+</html>

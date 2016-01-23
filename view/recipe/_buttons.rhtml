@@ -1,0 +1,79 @@
+<span class="recipe-name" style="display:none;"><%= h @recipe.name %></span>
+
+<a class="submit_button schedule_recipe" data-recipe-id="<%= @recipe.id %>">schedule</a>
+<a href="javascript:printRecipe();" class="submit_button">print</a>
+<a href="#" id="share_recipe_button" style="padding-right:5px;" class="submit_button">share <img src="/images/options_small.png" style="position:relative;top:-1px;"/></a>
+<a href="#" id="dropdown_button" style="padding-right:5px;" class="submit_button">more options <img src="/images/options_small.png" style="position:relative;top:-1px;"/></a>
+
+<div style="clear:both;"></div>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    var items = [];
+    
+    items.push({
+      text: "add to cook's view",
+      click: function() {
+        window.location = "/recipe/cook/<%= @recipe.id %>:1";
+      }
+    })
+    
+    items.push({
+      text: "add divider",
+      click: addDivider
+    });
+    
+    <% if @recipe.has_image %>
+      items.push({
+        text: "remove image",
+        click: removeImage
+      });
+      
+      items.push({
+        text: "change image",
+        click: addChangeImage
+      });
+    <% else %>
+      items.push({
+        text: "add image",
+        click: addChangeImage
+      });
+    <% end %>
+    
+    items.push({
+      text: "change title",
+      click: changeTitle
+    });
+    
+    items.push({
+      text: "print ingredients",
+      click: function() {
+        window.location = '/shop/show?recipe=<%= @recipe.id %>';
+      }
+    });
+    
+    items.push({
+      text: "delete recipe",
+      click: deleteRecipe
+    });
+    
+    new Mealfire.Dropdown({
+      element: $('#dropdown_button'),
+      heightAddition: 4,
+      width: 130,
+      cancelText: 'cancel',
+      items: items
+    });
+    
+    new Mealfire.Dropdown({
+      element: $('#share_recipe_button'),
+      cancelText: 'cancel',
+      heightAddition: 4,
+      items: [
+        {text: "email", click: shareRecipe},
+        {text: "facebook", click: shareFacebook},
+        {text: "link", click: shareLink}
+      ]
+    });
+  })
+</script>

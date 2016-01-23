@@ -1,0 +1,43 @@
+<script type="text/javascript" charset="utf-8">
+  $(function () {
+    setTimeout(updateTimer, 1000);
+  })
+  
+  function updateTimer() {
+    var time = parseInt($('#timer').text());
+    
+    if (time > 1) {
+      time -= 1;
+      $('#timer').text(time);
+      setTimeout(updateTimer, 1000);
+    } else {
+      $('#main_content form input[type=image]').click();
+    }
+  }
+</script>
+
+<div id="sub_header">
+  <h1>Payment</h1>
+</div>
+
+<div id="main_content">
+  <p style="margin-top:0;">
+    In order to offset server costs (since we do not run any ads), we charge a <em>one time</em>
+    fee of $<%= "%.2f" % @cost %> USD to use Mealfire. In <span id="timer">20</span> seconds we will redirect you to
+    Amazon to process your payment, or you can click on the link below now.
+  </p>
+  
+  <%=
+    Simplepay::Services::Standard.new.form({
+      :amount                   => @cost,  
+      :description              => "Mealfire Registration",
+      :return_url               => "http://#{DOMAIN}/register/success",
+      :abandon_url              => "http://#{DOMAIN}/register/abandon",
+      :ipn_url                  => "http://#{DOMAIN}/register/ipn", 
+      :collect_shipping_address => false,  
+      :immediate_return         => true,    
+      :process_immediately      => true,  
+      :reference_id             => current_user.id
+    }, '<input type="image" src="http://g-ecx.images-amazon.com/images/G/01/asp/SMPayNowWithLogo.gif"/>')
+  %>
+</div>

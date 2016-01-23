@@ -1,0 +1,22 @@
+<% @recipe.ingredient_groups.each do |grp| %>
+  <ul id="group_<%= grp.id %>" class="group <%= 'sub' if !grp.name.blank? %>">
+    <% if !grp.name.blank? %>
+      <li>
+        <div class="ingredient_group <%= 'highlight' if grp.updated_at > 5.seconds.ago %>">
+          <img id="groupoptions_<%= grp.id %>" class="dropdown" src="/images/options.png" style="margin-bottom:-1px;"/>
+          <%= h grp.name %>
+        </div>
+      </li>
+    <% end %>
+    <% grp.ingredients.each do |i| %>
+      <li class="ingredient <%= 'highlight' if i.updated_at > 5.seconds.ago %>" data-ingredient-id="<%= i.id %>">
+        <img id="ingredientoptions_<%= i.id %>" class="dropdown" src="/images/options.png" style="margin-bottom:-1px;"/>
+        <span itemprop="ingredient" itemscope itemtype="http://data-vocabulary.org/RecipeIngredient"><%= ingredient_to_html(i, :html_fraction => true, :all_fractions => true, :multiplier => @multiplier) %></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<script type="text/javascript" charset="utf-8">
+  setupIngredients();
+</script>

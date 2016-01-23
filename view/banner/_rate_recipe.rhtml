@@ -1,0 +1,43 @@
+<script type="text/javascript" charset="utf-8">
+  function rateRecipe(value) {
+    $('#top_banner .buttons').fadeTo('fast', 0.25);
+    
+    $.post('/rate_recipe_day', {value: value, id: <%= @day.id %>}, function() {
+      $('#top_banner').css('height', $('#top_banner').height());
+      $('#top_banner').html('<h1>Thanks!</h1>');
+      $('#top_banner').animate({height: ($('#top_banner h1').height() - 7) + 'px'}, function() {
+        window.setTimeout(function() {
+          $('#top_banner').slideUp();
+        }, 2000)
+      });
+    });
+  }
+  
+  function skipRecipe() {
+    $.post('/skip_rating_recipe_day', {id: <%= @day.id %>});
+    $('#top_banner').slideUp();
+  }
+  
+  function whatIsThis() {
+    new Mealfire.DynamicPopup({
+      title: 'Recipe Rating',
+      data: "Rating recipes after you prepare them helps to keep track of the meals " +
+        "you like the most. If you don't want to rate your recipes, you can turn the feature off " + 
+        'in your <a href="/account">account settings</a>.',
+      buttons: Mealfire.Buttons.closeOnly()
+    });
+  }
+</script>
+
+<div id="top_banner">
+  You recently prepared <h1><%= h @day.recipe.name %></h1>. How was it?
+  <div class="extra_buttons">
+    <a href="#" onclick="whatIsThis();return false;">What is this?</a>
+    <a href="#" onclick="skipRecipe();return false;">Skip</a>
+  </div>
+  <div class="buttons">
+    <a href="#" onclick="rateRecipe(0);return false;" class="submit_button"><strong>Not</strong> Good</a>
+    <a href="#" onclick="rateRecipe(0.5);return false;"class="submit_button">Good</a>
+    <a href="#" onclick="rateRecipe(1);return false;" class="submit_button"><strong>Very</strong> Good</a>
+  </div>
+</div>

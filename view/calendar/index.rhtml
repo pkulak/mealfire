@@ -1,0 +1,635 @@
+<% use_javascript('dropdown') %>
+<% @body_class = 'calendar' %>
+
+<!--[if IE 8]>
+  <style type="text/css" media="screen">
+    .recipe_box .right {
+      position: relative;
+      right: auto;
+      left: -6px;
+    }
+    .recipe_box {
+      margin-bottom: 0 !important;
+      margin-top: 1px !important;
+    }
+  </style>
+<![endif]-->
+
+<!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+    #next_month {margin-top: -17px;}
+  </style>
+<![endif]-->
+
+<!--[if lt IE 7]>
+  <style type="text/css" media="screen">
+    #recipe_pane {
+      width: 180px;
+    }
+    #tags_search {
+      padding-bottom: 4px;
+    }
+    #recipe_pane h2 {
+      width: 100%;
+    }
+    #tags_container, #search_container {
+      width: 100%;
+    }
+    .recipe_box .middle {
+      margin: 0 3px;
+    }
+    #recipe_pane .recipe_box .middle {
+      width: expression(this.clientWidth > 175? "175px" : this.clientWidth + "px");
+    }
+    div.calendar_day .recipe_box .middle {
+      width: expression(this.clientWidth > 85 ? "85px" : this.clientWidth + "px");
+    }
+    div.calendar_day .recipe_box {
+      margin-bottom: 0 !important;
+      margin-top: 1px !important;
+    }
+    .recipe_box span {
+      font-size: 6px;
+    }
+    .recipe_box img {
+      display: none;
+    }
+  </style>
+<![endif]-->
+
+<script type="text/javascript" charset="utf-8">
+  var current_year = <%= @month.year %>;
+  var current_month = <%= @month.month %>;
+  var selected_days = [];
+  var show_alert = true;
+
+  $(function() {
+    $('#tags_search').placeholder('search')
+    
+    $('#recipe_pane').droppable({
+      hoverClass: 'highlight',
+      accept: '.in_calendar',
+      drop: function(e, ui) {
+        data = {
+          id: ui.draggable.attr('id').split("_")[1],
+          current_year: current_year,
+          current_month: current_month
+        };
+        
+        $.post('/calendar/remove_recipe', data, function(data){
+          ui.draggable.closest('td').html(data);
+          setRowHeights();
+        });
+      }
+    });
+    
+    $('#tags_select').change(fillRecipePane);
+    
+    $('div.day_with_recipes').live('click', function() {
+      var id = this.id.split('-')[1];
+      var index = $.inArray(id, selected_days);
+      
+      if (index >= 0) {
+        $('#checkmark-' + id).remove();
+        
+        selected_days.splice(index, 1)
+      } else {
+        addCheckmark(this);
+        selected_days.push(id);
+      }
+    });
+   
+    setRecipePaneHeight();
+    fillRecipePane();
+    setRowHeights();
+  });
+  
+  function fillRecipePane() {
+    data = {}
+    
+    if ($('#tags_select').length > 0) {
+      data.id = $('#tags_select').val();
+    }
+    
+    if ($('#sort_by_prepared_link').data('selected')) {
+      data.order = 'last_served';
+    }
+
+    Mealfire.startBusy($('#recipe_holder'));
+
+    $.ajax({type: 'POST', dataType: 'json', cache: false,
+      url: '/calendar/_recipes',
+      data: data,
+      success: function(recipes) {
+        var holder = $('#recipe_holder');
+        holder.html('');
+        
+        var sideDishBox = $('<div id="side_dish_box" class="recipe_box in_panel side_dish_box">')
+          .append('<img src="/images/sd_left.png" class="left"/>')
+          .append('<div class="middle">New Side Dish</dish>')
+          .append('<img src="/images/sd_right.png" class="right"/>');
+                
+        holder.append(sideDishBox);
+        
+        if (recipes.length > 0) {
+          $.each(recipes, function() {
+            holder.append(makeRecipeBox(this));
+          });
+        } else {
+          holder.append('<br><p style="margin:10px 3px 3px 3px;">You don\'t have any recipes. <a href="/recipe/begin">Click here</a> to create one!</p>')
+        }
+        
+        <% if !current_user.has_imported %>
+          if (recipes.length < 10) {
+            var script = "<%= bookmarklet_source %>";
+            
+            holder
+              .append($('<div style="float:left;width:100%;clear:both;margin:0 0 0 3px;"></div>')
+                .append('<p>Want to collect recipes from all over the web? Grab the <a href="/bookmarklet">bookmarklet</a>:')
+                .append($('<p style="text-align:center;margin-left:3px;">')
+                  .append('<a class="submit_button" onclick="buttonClicked();return false;" href="' + script + '">Save to Mealfire</a>'))
+                .append('</p>'))
+          }
+        <% end %>
+
+        setupRecipePane();
+        Mealfire.endBusy($('#recipe_holder'));
+      }
+    });
+  }
+  
+  function setupRecipePane() {
+    $('#recipe_pane .recipe_box').each(function() {
+      var recipe_box = $(this);
+      
+      recipe_box.draggable({
+        revert: 'invalid',
+        scroll: false,
+        scrollSensitivity: 5000,
+        start: function() {
+          return $(document.body).disableSelection();
+        },
+        stop: function() {
+          return $(document.body).enableSelection();
+        },
+        helper: function() {
+          if (recipe_box.hasClass('side_dish_box')) {
+            var el = $('<div class="recipe_box side_dish_box"></div>').css('z-index', '6');
+            el.append('<img src="/images/sd_left.png" class="left"/>');
+            el.append($('<div class="middle"></div>').append(recipe_box.text()));
+            el.append('<img src="/images/sd_right.png" class="right"/>');
+          } else {
+            var el = $('<div class="recipe_box"></div>').css('z-index', '6');
+            el.append('<img src="/images/rb_left.png" class="left"/>');
+            el.append($('<div class="middle"></div>').append(recipe_box.text()));
+            el.append('<img src="/images/rb_right.png" class="right"/>');
+          }
+          
+          $(document.body).append(el);
+          return el;
+        },
+        opacity: 0.60
+      });
+    });
+        
+    $.each($('#recipe_pane .recipe_box'), function() {
+      recipeBoxPopup($(this));
+    });
+    
+    $('#side_dish_box').click(function() {
+      new Mealfire.Popup({
+        title: "New Side Dish",
+        data: "To create a new side dish, drag this button to your calendar.",
+        height: 125,
+        width: 400,
+        buttons: Mealfire.Buttons.closeOnly()
+      });
+    });
+    
+    $('#tags_search').keyup(function() {
+      runSearch($('#tags_search').val());
+    });
+        
+    // Manually set the size of the recipe box in IE 7.
+    if (isIE7()) {
+      $('#recipe_pane div.recipe_box .middle').each(function() {
+        setRecipeBoxWidth(this, 180)
+      });
+    }
+  }
+  
+  // For IE7 only
+  function setRecipeBoxWidth(item, max) {
+    var holder = $('<div style="float:left;display:none;"></div>').append($(item).text());
+    $(document.body).append(holder);
+    
+    if (holder.width() > max)
+      $(item).width(max);
+    else
+      $(item).width(holder.width());
+    
+    holder.remove();
+  }
+  
+  function addCheckmark(element) {
+    var offset = $(element).offset();
+    var id = 'checkmark-' + $(element).attr('id').split('-')[1];
+    
+    var checkmark = $('<img class="checkmark" src="/images/check_mark.png"/>')
+      .attr('id', id)
+      .css({
+        position: 'absolute',
+        left: (offset.left + 2) + 'px',
+        top: (offset.top - 5) + 'px'
+      })
+    
+    $(document.body).append(checkmark);
+  }
+  
+  function setupCell(div) {
+    div = $(div);
+    var td = div.closest('td');
+    var id = div.attr('id');
+    
+    // Set this cell droppable.
+    div.droppable({
+      hoverClass: 'highlight',
+      tolerance: 'pointer',
+      drop: function(e, ui) {
+        var type_id = ui.draggable.attr('id').split("_");
+        var date = this.id.split('-')[1].split("_");
+        var dropped = $(this);
+        
+        // Is it a new side dish?
+        if (ui.draggable.attr('id') == 'side_dish_box') {
+          var data = $('<div id="add_side_dish"></div>');
+          
+          data
+            .append('<label>Title</label>')
+            .append('<input type="text" id="sd_title">')
+            .append('<label>Ingredients (one per line)</label>')
+            .append('<textarea id="sd_ingredients" style="margin-bottom:1em;"></textarea>')
+            .append('<label>Notes (optional)</label>')
+            .append('<textarea id="sd_notes"></textarea>');
+          
+          new Mealfire.Popup({
+            title: 'Add Side Dish',
+            data: data,
+            width: 400,
+            height: 375,
+            buttons: Mealfire.Buttons.standard(function(popup) {
+              if ($.trim($('#sd_title').val()) == "") {
+                alert("Please enter a title.");
+                return false;
+              }
+              
+              if ($.trim($('#sd_ingredients').val()) == "") {
+                alert("Please enter at least one ingredient.");
+                return false;
+              } 
+              
+              td.load('/calendar/add_side_dish', {
+                year: date[0],
+                month: date[1],
+                day: date[2],
+                title: $('#sd_title').val(),
+                notes: $('#sd_notes').val(),
+                ingredients: $('#sd_ingredients').val(),
+                current_year: current_year,
+                current_month: current_month
+              }, setRowHeights);
+              
+              popup.close();
+            }),
+            complete: function(popup) {
+              var titleEntered = false;
+              $('#sd_ingredients').focus();
+              
+              var units = ["teaspoon","tsp","t","tablespoon","tbsp","tbs","fluid ounce","fl oz","cup","cp","c","pint","pt","quart","qt","gallon","gal","ounce","oz","pound","lb","gram","g","gr","kilogram","kg","kilo","milliliter","ml","millilitre","liter","l","litre"];
+              
+              var unitRegExes = $.map(units, function(u) {
+                return new RegExp('^' + u + '(s|es)?\\b', 'i');
+              });
+              
+              $('#sd_title').keyup(function() {
+                titleEntered = true;
+              });
+              
+              $('#sd_ingredients').keyup(function() {
+                if (titleEntered) return;
+                var firstLine = $('#sd_ingredients').val().split("\n")[0];
+                firstLine = firstLine.replace(/^[0-9 ./]*/, '');
+                
+                $.each(unitRegExes, function(i, u) {
+                  firstLine = firstLine.replace(u, '');
+                });
+                
+                firstLine = firstLine.replace(/^( |of)*/i, '');
+                
+                $('#sd_title').val(firstLine.titleCase());
+              });
+            }
+          });
+          
+          return;
+        }
+        
+        if (type_id[0] == 'recipe') {       
+          td.load('/calendar/add_recipe', {
+            year: date[0],
+            month: date[1],
+            day: date[2],
+            recipe_id: type_id[1],
+            current_year: current_year,
+            current_month: current_month
+          }, setRowHeights);
+        } else {
+          var data = {
+            year: date[0],
+            month: date[1],
+            day: date[2],
+            day_id: type_id[1],
+            current_year: current_year,
+            current_month: current_month
+          }
+          
+          $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            url: '/calendar/move_recipe',
+            data: data,
+            success: function(days) {
+              ui.draggable.closest('td').html(days.old_day);
+              dropped.closest('td').html(days.new_day);
+              setRowHeights();
+            }
+          });
+        }
+      }
+    });
+    
+    // Set the recipes in this cell to popup the recipe.
+    div.find('.recipe_box:not(.saved_list)').each(function() {
+      recipeBoxPopup($(this));
+    });
+    
+    // Set the recipes to draggable.
+    div.find('.recipe_box:not(.saved_list)').draggable({
+      revert: 'invalid',
+      helper: 'clone',
+      opacity: 0.5,
+      start: function() {
+        return $(document.body).disableSelection();
+      },
+      stop: function() {
+        return $(document.body).enableSelection();
+      }
+    });
+    
+    // Make sure this click doesn't trigger anything else we've set up.
+    div.find('.saved_list').click(function(e) {
+      e.stopPropagation();
+    });
+    
+    // Yank the check mark if it's not needed anymore.
+    if (!div.hasClass('day_with_recipes')) {
+      $('#checkmark-' + id).remove();
+    } else {
+      // If it needs a checkmark and doesn't have one, add it.
+      if ($('#checkmark-' + id).length == 0 && $.inArray(id, selected_days) >= 0) {
+        addCheckmark(div);
+      }
+    }
+    
+    // Set the recipe_box sizes explicitly if this is IE7.
+    if (isIE7()) {
+      div.find('div.recipe_box .middle').each(function() {
+        setRecipeBoxWidth(this, 86)
+      });
+    }
+  }
+  
+  function recipeBoxPopup(box) {
+    var type_id = box.attr('id').split("_");
+  
+    var buttons = [Mealfire.Buttons.close];
+  
+    if (!box.hasClass('side_dish_box')) {
+      buttons.push({
+        text: 'View Recipe',
+        click: function() {
+          document.location = '/recipe/edit/' + (type_id[0] == 'day' ? 'day_' : '') + type_id[1];
+          return false;
+        }
+      });
+    
+      buttons.push({
+        text: 'Print Recipe',
+        click: function() {
+          var new_loc = '/recipe/print/' + (type_id[0] == 'day' ? 'day_' : '') + type_id[1];
+
+          if (window.multiplier && window.multiplier != 1)
+            new_loc += "?multiplier=" + window.multiplier;
+        
+          window.location = new_loc;
+          return false;
+        }
+      });
+    }
+    
+    if (!(box.hasClass('side_dish_box') && box.hasClass('in_panel'))) {
+      box.click(function(e) {      
+        new Mealfire.DynamicPopup ({
+      	  url: '/calendar/_recipe/' + box.attr('id'),
+      	  title: box.find('.middle').text(),
+      	  buttons: buttons
+    	  });
+	  
+    	  e.stopPropagation();
+      });
+    }
+  }
+  
+  function setRowHeights() {
+    $.each($('div.calendar_day'), function() {
+      $(this).css('height', 'auto');
+    });
+  
+    $.each($('div.calendar_day'), function() {
+      var cd = $(this);
+      cd.css('height', cd.closest('td').height() + 'px');
+    });
+    
+    setRecipePaneHeight();
+  }
+  
+  function setRecipePaneHeight() {
+    $('#recipe_holder').css('height', '375px');
+    
+    var baseHeight = $('#recipe_pane').height();
+    
+    while ($('#recipe_pane').height() == baseHeight) {
+      $('#recipe_holder').css('height', ($('#recipe_holder').height() + 1) + 'px');
+    }
+    
+    $('#recipe_holder').css('height', ($('#recipe_holder').height() - 1) + 'px');
+  }
+  
+  function setCheckMarks() {
+    $.each(selected_days, function() {
+      addCheckmark($('#date-' + this));
+    });
+  }
+
+  function showMonth(year, month) {
+    data = {year: year, month: month};
+    Mealfire.startBusy('#calendar_holder');
+    $('#calendar_holder').load('/calendar/_month', data, function () {
+      current_year = year;
+      current_month = month;
+      $('img.checkmark').remove();
+      setCheckMarks();
+      setRowHeights();
+      Mealfire.endBusy('#calendar_holder');
+    });
+  }
+  
+  function createShoppingList() {
+    if ($("form.popup").length > 0)
+      return;
+    
+    var message = null;
+    
+    if ($('.recipe_box').size() == 0) {
+      message = "You don't have any recipes yet! <a href=\"/recipe/begin\">Click here</a> " +
+        "to get started.";
+    } else if ($('.day_with_recipes').size() == 0) {
+      message = "Please add some recipes by dragging them to your calendar " +
+        "from the area on the left.";
+    } else if (selected_days.length == 0) {
+      message = 'Please click on at least one day that you would like to shop for. ' +
+        'Keep in mind that you can only shop for days that have a recipe.';
+    }
+    
+    if (message) {
+      new Mealfire.DynamicPopup({
+        title: "Shopping List",
+        data: message,
+        width: 400,
+        buttons: Mealfire.Buttons.closeOnly()
+      });
+      
+      return
+    }
+    
+    var stores = <%= current_user.stores.collect{|s| [s.id, s.name]}.to_json %>;
+    
+    var showList = function(store_id) {
+      var new_loc = '/shop/show?days=' + selected_days.join(',');
+      
+      if (store_id)
+        new_loc = new_loc + "&store_id=" + store_id
+
+      window.location = new_loc;
+    }
+    
+    if (stores.length > 1) {
+      var select = $('<select style="width:100%;"></select>');
+      
+      $.each(stores, function() {
+        select.append($('<option></option>')
+          .attr('value', this[0])
+          .text(this[1]));
+      });
+      
+      new Mealfire.Popup({
+        title: 'Choose a Store',
+        data: select,
+        width: 300,
+        height: 125,
+        buttons: Mealfire.Buttons.standard(function(popup) {
+          popup.close();
+          showList(select.val());
+        })
+      });
+    } else if (stores.length == 1) {
+      showList(stores[0][0]);
+    } else {
+      showList();
+    }
+  }
+  
+  function multiplyBy(id, multiplier) {
+    var data = {id: id, multiplier: multiplier}
+    $('form.popup td').load('/calendar/multiply_recipe_day', data)
+  }
+  
+  function runSearch(term) {
+    $('#recipe_holder .recipe_box').each(function() {
+      var box = $(this);
+      
+      if (term == '' || box.text().toLowerCase().indexOf(term) > -1) {
+        box.css('display', 'block');
+      } else {
+        box.css('display', 'none');
+      }
+    });
+  }
+  
+  function sortByName() {
+    $('#sort_by_prepared_link').data('selected', false);
+    $('#sort_by_name_link').addClass('inactive');
+    $('#sort_by_prepared_link').removeClass('inactive');
+    fillRecipePane();
+  }
+  
+  function sortByPrepared() {
+    $('#sort_by_prepared_link').data('selected', true);
+    $('#sort_by_name_link').removeClass('inactive');
+    $('#sort_by_prepared_link').addClass('inactive');
+    fillRecipePane();
+  }
+</script>
+
+<div id="sub_header">
+  <a class="submit_button" href="javascript:createShoppingList();">Create Shopping List</a>
+  <h1>Calendar</h1>
+</div>
+
+<table>
+  <tr>
+    <td id="recipe_pane" valign="top">
+      <h2>Your Recipes</h2>
+      <% if @tags.length > 0 %>
+        <div id="tags_container">
+          Show
+          <select id="tags_select" style="width: 100px">
+            <option value="">everything</option>
+            <% @tags.each do |tag| %>
+              <option value="<%= tag.id %>"><%= tag.name %></option>
+            <% end %>
+          </select>
+        </div>
+      <% end %>
+      <% if @recipe_count > 10 %>
+        <div id="search_container">
+          <input type="text" id="tags_search" name="tags_search"/>
+        </div>
+      <% end %>
+      <% if @recipe_count > 5 %>
+        <div id="sort_container">
+          <span style="float:right">
+            <a id="sort_by_name_link" href="javascript:sortByName();" class="inactive">name</a> |
+            <a id="sort_by_prepared_link" href="javascript:sortByPrepared();">last prepared</a>
+          </span>
+          Sort by:
+        </div>
+      <% end %>
+      <div id="recipe_holder"></div>
+    </td>
+    <td style="padding:20px;" id="calendar_holder" valign="top">
+      <%= render_view :_month, :month => @month %>
+    </td>
+  </tr>
+</table>

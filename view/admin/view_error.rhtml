@@ -1,0 +1,34 @@
+<style type="text/css" media="screen">
+  #error-table td {
+    padding: 5px 10px;
+  }
+  #error-table td:first-child {
+    font-weight: bold;
+    vertical-align: top;
+  }
+</style>
+
+<div id="sub_header">
+  <a href="/admin/completed_error?id=<%= @error.id %>" class="submit_button" style="margin-left:5px;" >Completed</a>
+  <a href="/admin/invalid_error?id=<%= @error.id %>" class="submit_button">Invalid</a>
+  <h1>View Error</h1>
+</div>
+
+<table id="error-table">
+  <tr>
+    <td>Date:</td>
+    <td><%= @current_user.adjust_time(@error.created_at).strftime('%Y-%m-%d %I:%M:%S %p') %>
+  </tr><tr>
+    <td>Type:</td>
+    <td><%= @error.type %></td>
+  </tr><tr>
+    <td>Request:</td>
+    <td><%= @error.request %></td>
+  </tr><tr>
+    <td>Error:</td>
+    <td><%= @error.error %></td>
+  </tr><tr>
+    <td>Trace:</td>
+    <td><pre><%= @error.stack_trace %><pre></td>
+  </tr>
+</table>

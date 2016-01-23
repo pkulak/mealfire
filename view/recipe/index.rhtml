@@ -1,0 +1,183 @@
+<% use_stylesheet('smoothness/jquery-ui-1.7.2.custom') %>
+<% use_javascript('jquery.autocomplete') %>
+<% use_stylesheet('jquery.autocomplete') %>
+<% @body_class = 'recipe_index' %>
+
+<!--[if lt IE 8]>
+  <style type="text/css" media="screen">
+    li.recipe h2 span {
+      margin-top: -17px !important;
+    }
+    li.recipe h2 {
+      margin-top: 8px !important;
+    }
+  </style>
+<![endif]-->
+
+<script type="text/javascript" charset="utf-8">
+  $(function () {
+    $('li.recipe').mouseover(function() {
+      $(this).css('background-color', '#edf7f1');
+    }).mouseout(function() {
+      $(this).css('background-color', '#fff');
+    });
+  });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  var currentPopup = null;
+
+  $(function() {
+    $('#new_recipe_button').click(function() {      
+      new Mealfire.Popup({
+        title: "Recipe Name",
+        height: 125,
+        data: '<input type="text" name="title" style="width:97%;"/>',
+        form_params: {method: 'post', action: '/recipe/begin'},
+        buttons: Mealfire.Buttons.standard()
+      });
+    });
+    
+    $('a.delete_recipe').click(function(e) {
+      var id = $(this).closest('li').attr('id');
+      var title = $(this).closest('li').find('a.recipe_name').text();
+      
+      new Mealfire.DynamicPopup({
+        title: "Delete Recipe",
+        width: 400,
+        data: "Are you sure you want to delete \"" + title + "\"? This <strong>cannot</strong> be undone!",
+        buttons: [Mealfire.Buttons.cancel, {
+          text: 'Delete Recipe',
+          click: function(popup) {
+            $.post("/recipe/delete", {id: id}, function() {
+              window.location.reload();
+            })
+            popup.loading();
+            return false;
+          }
+        }]
+      });
+      
+      e.stopPropagation();
+    });
+    
+    $('a.add-tag').live('click', function(e) {
+      var input = $('<input id="new-tag-input" type="text" style="width:250px">');
+      var recipeID = $(this).attr('data-recipe-id');
+      var anchor = $(this);
+      
+      input.autocomplete([
+        <%= @autocomplete_tags %>
+      ]);
+
+      new Mealfire.Popup({
+        title: "Add Recipe Tag",
+        data: input,
+        height: 125,
+        width: 300,
+        buttons: Mealfire.Buttons.standard(function(popup) {
+          var tag = input.val();
+          
+          if (tag == "")
+            return;
+          
+          $.ajax({
+            url: '/recipe/add_tag/' + recipeID,
+            data: {name: tag, render_tag_only: true},
+            success: function(data) {
+              var li = $('<li>')
+                .append($('<a>').append(data));
+              
+              var parent = anchor.closest('div.recipe_info');
+              
+              if (parent.find('ul').length) {
+                parent.find('ul li:last-child').before(li);
+              } else {
+                anchor.remove();
+                parent.append(
+                  $('<ul class="tags with_tag_image">')
+                  .append(li)
+                  .append('<li class="add-tag"><a href="#"class="add-tag" data-recipe-id="' + recipeID + '" onclick="return false;">+</a></li>'));
+              }
+              
+              popup.close();
+            },
+            error: function(req) {
+              new Mealfire.Popup({
+                height: 125,
+                title: 'Error',
+                data: req.responseText,
+                buttons: Mealfire.Buttons.closeOnly()
+              })
+              
+              popup.close();
+            }
+          });
+        })
+      });
+      
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<div id="sub_header">
+  <a href="/bookmarklet" class="submit_button" style="margin-left:5px;">Import</a>
+  <a class="submit_button" id="new_recipe_button">Create New Recipe</a>
+  <h1><%= @title %> (<%= @total %>)</h1>
+</div>
+
+<% if @user_tags.length > 0 %>
+  <div style="border-bottom: 1px solid #CBF2D8;">
+    <ul class="tags tag_cloud" style="float:left;margin-top:0;">
+      <h3 style="float:left;margin:5px 0 0 10px;">Your Tags:</h3>
+      <li style="margin-top:5px;"><a href="<%= tag_url(nil, {top: request[:top]}) %>">all tags</a></li>
+      <% if current_user.rated_recipes? %>
+        <% if request[:top] %>
+          <li style="margin-top:5px;"><a href="<%= tag_url(request[:tag], {top: false}) %>">all rated</a></li>
+        <% else %>
+          <li style="margin-top:5px;"><a href="<%= tag_url(request[:tag], {top: true}) %>">top rated</a></li>
+        <% end %>
+      <% end %>
+      <% @user_tags.each do |tag| %>
+        <li style="margin-top:5px;"><a href="<%= tag_url(tag, {top: request[:top]}) %>"><%= tag.name %></a></li>
+      <% end %>
+    </ul>
+    <div style="clear:both;"></div>
+  </div>
+<% end %>
+
+<div id="main_content">
+  <ul class="recipe_list">
+    <% @recipes.each do |recipe| %>
+      <li class="separated_list recipe<%= ' hidden' if recipe.hidden %>" id="<%= recipe.id %>">
+        <%= date_box(recipe.created_at) %>
+        <img src="<%= recipe.image_url(:thumb) %>" class="small_recipe_image">
+        <h2>
+          <a href="/recipe/<%= recipe.id %>" class="recipe_name"><%= h recipe.name %></a>
+          <span>
+            <div style="float:right">
+              <span class="recipe-name" style="display:none;"><%= h recipe.name %></span>
+              [<a class="delete_recipe">delete</a>]
+              [<a data-recipe-id="<%= recipe.id %>" class="schedule_recipe">schedule</a>]
+            </div>
+            <%= recipe_rating_html(recipe, current_user) %>
+          </span>
+        </h2>
+        <div class="recipe_info" style="margin-left:40px;">
+          <% if recipe.recipe_tags.length > 0 %>
+            <ul class="tags with_tag_image">
+              <% Tag.sort_tags(recipe.recipe_tags.collect(&:tag), @user_tags).each do |t| %>
+                <li><a href="<%= tag_url(t) %>"><%= h t.name %></a></li>
+              <% end %>
+              <li class="add-tag"><a href="#" data-recipe-id="<%= recipe.id %>" class="add-tag" onclick="return false;">+</a></li>
+            </ul>
+          <% else %>
+            <a href="#" style="font-size:11px;" data-recipe-id="<%= recipe.id %>" class="add-tag" onclick="return false;">add tag</a>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <%= pagination_arrows(@recipes, 'recipe') %>
+</div>

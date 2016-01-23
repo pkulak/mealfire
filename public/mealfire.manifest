@@ -1,0 +1,39 @@
+CACHE MANIFEST
+# Cache manifest version 2010.03.29
+
+images/check_mark.png
+images/mobile/activityindicator.png
+images/mobile/backButton.png
+images/mobile/blueButton.png
+images/mobile/cancel.png
+images/mobile/chevron.png
+images/mobile/delete.png
+images/mobile/grayButton.png
+images/mobile/icon_57.png
+images/mobile/listArrowSel.png
+images/mobile/listGroup.png
+images/mobile/on_off.png
+images/mobile/pinstripes.png
+images/mobile/selection.png
+images/mobile/startup.png
+images/mobile/thumb.png
+images/mobile/toggle.png
+images/mobile/toggleOn.png
+images/mobile/toolButton.png
+images/mobile/toolbar.png
+images/mobile/whiteButton.png
+
+js/jquery.min.js
+js/jqtouch.min.js
+js/mobile.js
+js/jqtouch.transitions.js
+
+css/jqtouch.min.css
+css/mobile.css
+css/jqtouch.theme.css
+
+NETWORK:
+# All URLs that start with the following lines
+# are whitelisted.
+http://static.mealfire.com/
+http://mealfire.com/

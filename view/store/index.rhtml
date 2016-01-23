@@ -1,0 +1,20 @@
+<% @title = 'New Store' %>
+<% @body_class = 'store_index' %>
+<% show_banner %>
+
+<div id="sub_header">
+  <a class="submit_button" href="/store/new">New Store</a>
+  <h1>Your Stores</h1>
+</div>
+
+<div id="main_content">
+  <% if current_user.stores.length > 0 %>
+    <ul>
+      <% current_user.stores.each do |store| %>
+        <li><h2><a href="/store/<%= store.id %>"><%= h store.name %></a></h2></li>
+      <% end %>
+    </ul>
+  <% else %>
+    You haven't added any stores yet! <a href="/store/new">Click here</a> to get started.
+  <% end %>
+</div>

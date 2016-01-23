@@ -1,0 +1,12 @@
+<table>
+  <% i = 1 %>
+  <% @items.each do |item| %>
+    <tr id="<%= item.id %>" class="<%= 'highlight' if item.updated_at > 5.seconds.ago %>">
+      <td class="dropdown"><img class="dropdown" src="/images/options.png"/></td>
+      <td class="ordinal"><%= i %>.</td>
+      <td class="text"><%= h item.text %></td>
+      <td class="time"><%= smart_date(item.created_at) %></td>
+    </tr>
+    <% i += 1%>
+  <% end %>
+</table

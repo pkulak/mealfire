@@ -1,0 +1,32 @@
+<table class="calendar">
+  <thead>
+    <tr>
+      <td colspan="7" style="text-align:center;">
+        <a id="previous_month" href="javascript:showMonth(<%= @month.previous.year %>, <%= @month.previous.month %>)">
+          <%= @month.previous.name %>
+        </a>
+        <%= @month.name %>, <%= @month.year %>
+        <a id="next_month" href="javascript:showMonth(<%= @month.next.year %>, <%= @month.next.month %>)">
+          <%= @month.next.name %>
+        </a>
+      </td>
+    <tr>
+      <td>Sunday</td>
+      <td>Monday</td>
+      <td>Tuesday</td>
+      <td>Wednesday</td>
+      <td>Thursday</td>
+      <td>Friday</td>
+      <td>Saturday</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @month.weeks.each do |week| %>
+      <tr>
+        <% week.each do |day| %>
+          <td class="droppable" valign="top"><%= day.render %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

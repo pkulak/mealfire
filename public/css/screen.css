@@ -1,0 +1,790 @@
+html { color: #000000; }
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
+  margin: 0;
+  padding: 0;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+fieldset, img { border: 0; }
+address, caption, cite, code, dfn, th, var, optgroup {
+  font-style: inherit;
+  font-weight: inherit;
+}
+del, ins { text-decoration: none; }
+li { list-style: none; }
+caption, th { text-align: left; }
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+q:before { content: ''; }
+q:after { content: ''; }
+abbr, acronym {
+  border: 0;
+  font-variant: normal;
+}
+sup, sub { vertical-align: baseline; }
+legend { color: #000000; }
+input, button, textarea, select, optgroup, option {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+}
+input, button, textarea, select { *font-size: 100%; }
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.clearfix { display: inline-block; }
+html[xmlns] .clearfix { display: block; }
+* html .clearfix { height: 1%; }
+dt {
+  float: left;
+  width: 100px;
+}
+dd { padding: 1px 0; }
+li { margin: 3px 0; }
+.stars {
+  background-image: url(/images/stars.png);
+  width: 55px;
+  height: 12px;
+}
+.stars_0_0 { background-position: 0 0; }
+.stars_0_5 { background-position: 0 -12px; }
+.stars_1_0 { background-position: 0 -24px; }
+.stars_1_5 { background-position: 0 -36px; }
+.stars_2_0 { background-position: 0 -48px; }
+.stars_2_5 { background-position: 0 -60px; }
+.stars_3_0 { background-position: 0 -72px; }
+.stars_3_5 { background-position: 0 -84px; }
+.stars_4_0 { background-position: 0 -96px; }
+.stars_4_5 { background-position: 0 -108px; }
+.stars_5_0 { background-position: 0 -120px; }
+.submit_button {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #000000;
+  padding: 1px 8px;
+  background-color: #6acaea;
+  border: 1px solid #013344;
+  font-weight: normal;
+}
+.submit_button.small {
+  font-size: 12px;
+  padding: 0 3px;
+}
+input.placeholder { color: #a9a9a9 !important; }
+a.submit_button { text-decoration: none; }
+#directions_holder ol { padding-left: 0; }
+#directions_holder ul { padding-left: 0; }
+#directions_holder ol li { margin: 0 0 8px 30px; }
+#directions_holder ul li { margin: 0 0 8px 30px; }
+#directions_holder ol li { list-style-type: decimal; }
+#directions_holder ul li { list-style-type: disc; }
+body {
+  font-size: 12px;
+  line-height: 1.4em;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  text-align: center;
+  background-color: #f6f6f6;
+}
+body#tinymce {
+  text-align: left;
+  background-color: #ffffff;
+  margin: 5px;
+}
+body#tinymce ol { padding-left: 0; }
+body#tinymce ul { padding-left: 0; }
+body#tinymce ol li { margin: 0 0 8px 30px; }
+body#tinymce ul li { margin: 0 0 8px 30px; }
+body#tinymce ol li { list-style-type: decimal; }
+body#tinymce ul li { list-style-type: disc; }
+h1, h2, h3 {
+  font-weight: bold;
+  margin: 10px 0;
+  color: #2d6b42;
+}
+ul, ol, p { margin: 10px 0; }
+h1 {
+  font-size: 14px;
+  line-height: 14px;
+}
+h2 { font-size: 12px; }
+p { margin-bottom: 1em; }
+.first { margin-top: 0 !important; }
+sub, sup {
+  font-size: 10px;
+  line-height: 10px;
+}
+sub { vertical-align: sub; }
+sup { vertical-align: super; }
+li li { margin-left: 10px; }
+a {
+  text-decoration: none;
+  color: #0e7395;
+}
+a:hover { text-decoration: underline; }
+a.inactive {
+  color: #000000;
+  cursor: default;
+}
+a.inactive:hover { text-decoration: none; }
+input[type=text], input[type=password] {
+  border: 1px solid #013344;
+  padding: 2px 3px;
+  font-weight: bold;
+  color: #333333;
+}
+textarea {
+  border: 1px solid #013344;
+  padding: 2px 3px;
+}
+#content, #header {
+  margin: 0px auto;
+  text-align: left;
+}
+#content {
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  background-color: #ffffff;
+  width: 798px;
+  border-left: 1px solid #68ef95;
+  border-right: 1px solid #68ef95;
+  border-bottom: 1px solid #68ef95;
+}
+label {
+  font-weight: bold;
+  color: #555555;
+}
+.popup div.ui-datepicker { margin: auto; }
+#header {
+  width: 800px;
+  position: relative;
+  height: 40px;
+  background: #68ef95;
+}
+#header img {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+}
+#header h1 {
+  margin: 0;
+  height: 40px;
+  line-height: 40px;
+  margin-left: 45px;
+  font-size: 16px;
+}
+#header h1 a { color: #2d6b42; }
+#header h1 a:hover { text-decoration: none; }
+#header #header_links {
+  color: #ffffff;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 150px;
+  right: 0;
+  margin: 0;
+}
+#header #header_links a { color: #2d6b42; }
+#header #header_links li {
+  line-height: 40px;
+  display: inline;
+  padding-right: 10px;
+}
+#header #header_links li.auth_link { float: right; }
+#header #header_links li.header_search { float: right; }
+#header #header_links li.header_search { margin-top: 0px; }
+#header #header_links li.header_search input[type=text] {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  width: 150px;
+}
+#sub_header {
+  padding: 7px 10px;
+  border-bottom: 2px solid #b0efc5;
+  background-color: #cbf2d8;
+}
+#sub_header h1 {
+  margin: 0;
+  font-size: 14px;
+}
+#sub_header .submit_button {
+  float: right;
+  margin-top: -2px;
+}
+#main_content { padding: 10px; }
+div.section_box {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #2d6b42;
+}
+div.section_box h2 {
+  border-bottom: 1px solid #2d6b42;
+  background-color: #68ef95;
+  padding: 3px 7px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 14px;
+}
+div.section_box div.section_content { padding: 8px; }
+form.popup {
+  position: absolute;
+  text-align: left;
+}
+form.popup input.submit_button { margin-right: 5px; }
+form.popup div.north {
+  position: absolute;
+  background-image: url(/images/north.png);
+  height: 10px;
+  top: 0;
+  left: 10px;
+}
+form.popup div.south {
+  position: absolute;
+  background-image: url(/images/south.png);
+  height: 10px;
+  bottom: 0;
+  left: 10px;
+}
+form.popup div.east {
+  position: absolute;
+  background-image: url(/images/east.png);
+  width: 10px;
+  top: 10px;
+  right: 0;
+}
+form.popup div.west {
+  position: absolute;
+  background-image: url(/images/west.png);
+  width: 10px;
+  top: 10px;
+  left: 0;
+}
+form.popup div.northwest {
+  position: absolute;
+  background-image: url(/images/popup_corners.png);
+  width: 10px;
+  height: 10px;
+}
+form.popup div.northeast {
+  position: absolute;
+  background-image: url(/images/popup_corners.png);
+  width: 10px;
+  height: 10px;
+}
+form.popup div.southwest {
+  position: absolute;
+  background-image: url(/images/popup_corners.png);
+  width: 10px;
+  height: 10px;
+}
+form.popup div.southeast {
+  position: absolute;
+  background-image: url(/images/popup_corners.png);
+  width: 10px;
+  height: 10px;
+}
+form.popup div.northwest {
+  background-position: 0 0px;
+  top: 0;
+  left: 0;
+}
+form.popup div.northeast {
+  background-position: 0 30px;
+  top: 0;
+  right: 0;
+}
+form.popup div.southwest {
+  background-position: 0 10px;
+  bottom: 0;
+  left: 0;
+}
+form.popup div.southeast {
+  background-position: 0 20px;
+  bottom: 0;
+  right: 0;
+}
+form.popup div.header {
+  padding: 0 5px;
+  position: absolute;
+  font-weight: bold;
+  font-size: 14px;
+  top: 10px;
+  left: 10px;
+  height: 24px;
+  line-height: 24px;
+  background-color: #6acaea;
+  border: 1px solid #000000;
+  color: #000000;
+}
+form.popup div.content {
+  position: absolute;
+  top: 36px;
+  left: 10px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  padding: 10px;
+}
+form.popup div.footer {
+  background-color: #ffffff;
+  padding: 3px 5px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  height: 22px;
+  border-bottom: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+form.popup div.footer input { float: right; }
+img.dropdown { cursor: pointer; }
+div.dropdown_menu {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #2d6b42;
+  background: #ffffff;
+  text-align: left;
+}
+div.dropdown_menu div.item {
+  cursor: pointer;
+  padding: 1px 7px;
+}
+div.dropdown_menu div.hover { background: #6acaea; }
+div.dropdown_menu div.notFirst { border-top: 1px solid #2d6b42; }
+div.dropdown_menu div.notClickable { cursor: default; }
+a.tiny_delete_button {
+  width: 10px;
+  height: 10px;
+  background-image: url(/images/remove.gif);
+  background-repeat: no-repeat;
+  display: block;
+  float: left;
+  margin-right: 3px;
+  margin-top: 4px;
+}
+a.tiny_delete_button:hover { background-position: -10px 0; }
+div.pagination {
+  text-align: center;
+  height: 17px;
+  line-height: 17px;
+  color: #666666;
+}
+div.pagination img {
+  vertical-align: middle;
+  margin: 0 5px;
+}
+#top_banner {
+  padding: 7px 20px 10px 20px;
+  background-color: #cbf2d8;
+  border-bottom: 1px solid #2d6b42;
+  text-align: center;
+  position: relative;
+}
+#top_banner h1 {
+  margin: 0;
+  display: inline;
+  font-size: 16px;
+}
+#top_banner div.buttons {
+  text-align: center;
+  margin-top: 10px;
+}
+#top_banner div.extra_buttons {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+#top_banner div.extra_buttons a {
+  background: #ffffff;
+  border: 1px solid #93c9a5;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 0 10px;
+}
+#top_banner img.close {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+}
+body div.no_styles h2 {
+  color: #000000;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0.7em 0;
+}
+#login_form td { padding: 3px 5px; }
+#login_form label {
+  font-weight: bold;
+  color: #555555;
+}
+#login_form input.submit_button { margin: 10px 5px 0 5px; }
+#login_form a { font-size: 11px; }
+.recipe_box {
+  float: left;
+  clear: both;
+  line-height: 16px;
+  white-space: nowrap;
+  position: relative;
+}
+.recipe_box .left {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.recipe_box .middle {
+  float: left;
+  background-color: #6acaea;
+  overflow: hidden;
+  color: #000000;
+  margin: 0 6px;
+}
+.recipe_box .middle:hover { text-decoration: none; }
+.recipe_box .right {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.side_dish_box .middle { background-color: #cbf2d8; }
+#add_side_dish { margin-top: -10px; }
+#add_side_dish label { display: block; }
+#add_side_dish input[type=text] { margin-bottom: 1em; }
+#add_side_dish textarea { height: 75px; }
+#add_side_dish input[type=text] { width: 350px; }
+#add_side_dish textarea { width: 350px; }
+.saved_list .middle { background-color: #68ef95; }
+.saved_list a { color: #000000; }
+.saved_list a:hover { text-decoration: none; }
+div.date_box {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #aaaaaa;
+  color: #ffffff;
+  padding: 0 5px;
+  margin: 5px 10px 0 0;
+  width: 25px;
+  float: left;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+}
+div.date_box div.day {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 20px;
+}
+img.small_recipe_image {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  margin: 5px 10px 0 0;
+  width: 34px;
+  height: 34px;
+  float: left;
+}
+div.multipliers {
+  float: right;
+  font-weight: normal;
+  font-size: 12px;
+  color: #000000;
+}
+div.multipliers .selected {
+  background-color: #cbf2d8;
+  cursor: default;
+}
+div.multipliers .multiplier {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #2d6b42;
+  padding: 0 3px;
+  float: left;
+  margin-right: 3px;
+  cursor: pointer;
+  color: #000000;
+}
+div.ingredient_group {
+  font-size: 14px;
+  font-weight: bold;
+  color: #777777;
+  margin: 10px 0;
+}
+body.store_index #main_content h2 { font-size: 14px; }
+ul.with_tag_image {
+  padding-left: 74px;
+  height: 15px;
+  background-image: url(/images/tag.gif);
+  background-position: 54px 2px;
+  background-repeat: no-repeat;
+}
+ul.tags li {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  float: left;
+  color: #666666;
+  background-color: #cbf2d8;
+  margin: 0 0 0 7px;
+  padding: 0 5px;
+}
+ul.recipe_list { margin: 0; }
+ul.recipe_list li.recipe {
+  padding: 5px 20px;
+  margin: 0;
+  border-bottom: 1px solid #cbf2d8;
+  height: 45px;
+}
+ul.recipe_list li.hidden h2 a.recipe_name { text-decoration: line-through; }
+ul.recipe_list ul.tags { margin: 5px 0; }
+ul.recipe_list h2 {
+  font-size: 14px;
+  margin: 3px 0;
+}
+ul.recipe_list h2 span {
+  color: #888888;
+  float: right;
+  text-align: right;
+  margin-left: 10px;
+  margin-top: 2px;
+  font-size: 12px;
+}
+ul.recipe_list h2 span a { cursor: pointer; }
+ul.recipe_list h2 span .stars {
+  float: right;
+  clear: both;
+  margin-top: 3px;
+}
+div.pagination { margin: 10px 0; }
+body.calendar #content {
+  width: 948px;
+  padding: 0;
+}
+body.calendar #header { width: 950px; }
+body.calendar table.calendar thead td { background-color: #cbf2d8; }
+body.calendar table.calendar thead td { padding: 3px 5px; }
+body.calendar table.calendar tbody td { width: 100px; }
+body.calendar table.calendar td { border: 1px solid #cccccc; }
+body.calendar table.calendar div.calendar_day {
+  height: 100%;
+  width: 100px;
+  overflow: hidden;
+}
+body.calendar table.calendar div.today { background-color: #cbe5ee; }
+body.calendar table.calendar div.today div.day { background-color: #6acaea; }
+body.calendar table.calendar div.day {
+  position: relative;
+  background-color: #cbf2d8;
+  padding: 1px 5px;
+  text-align: right;
+  height: 15px;
+  line-height: 15px;
+}
+body.calendar table.calendar div.not_this_month div.day {
+  padding: 1px 5px 0 5px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #cbf2d8;
+  color: #888888;
+}
+body.calendar .highlight { background-color: #dcf8b6 !important; }
+body.calendar #recipe_pane {
+  border-right: 2px solid #b0efc5;
+  width: 200px;
+}
+body.calendar #recipe_pane h2 {
+  margin: 0;
+  padding: 5px;
+  border-bottom: 2px solid #b0efc5;
+  color: #0aaf42;
+  background-color: #ffffff;
+}
+body.calendar #recipe_pane .recipe_box {
+  z-index: 5;
+  margin-top: 3px;
+  cursor: move;
+}
+body.calendar #recipe_pane .recipe_box .middle { max-width: 165px; }
+body.calendar div.calendar_day .recipe_box {
+  z-index: 5;
+  margin: 0 0 3px 1px;
+  cursor: pointer;
+}
+body.calendar div.calendar_day .recipe_box .middle { max-width: 86px; }
+body.calendar .future_day .recipe_box { cursor: move; }
+body.calendar div.directions ol li {
+  list-style-type: decimal;
+  margin: 0 0 5px 30px;
+}
+body.calendar div.directions ul li {
+  list-style-type: disc;
+  margin: 0 0 5px 30px;
+}
+body.calendar #recipe_holder {
+  padding: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 194px;
+  position: relative;
+}
+body.calendar form.popup { z-index: 10; }
+body.calendar .spacer {
+  height: 19px;
+  float: left;
+  clear: both;
+}
+body.calendar .rs {
+  padding-top: 3px;
+  overflow: hidden;
+}
+body.calendar #previous_month { float: left; }
+body.calendar #next_month { float: right; }
+body.calendar #tags_search {
+  width: 177px;
+  border: none;
+  border-bottom: 1px solid #b0efc5;
+  background-image: url(/images/magnify.png);
+  background-repeat: no-repeat;
+  background-position: 3px 3px;
+  padding-left: 20px;
+}
+body.calendar #tags_container {
+  padding: 3px 5px;
+  border-bottom: 1px solid #cbf2d8;
+  font-size: 11px;
+  background: #ffffff;
+}
+body.calendar #search_container { position: relative; }
+body.calendar #sort_container {
+  padding: 1px 5px;
+  border-bottom: 1px solid #cbf2d8;
+}
+body.edit_recipe table.shares { width: 100%; }
+body.edit_recipe table.shares td { padding-bottom: 3px; }
+body.edit_recipe table.settings { margin-top: -5px; }
+body.edit_recipe table.settings td { padding: 10px 10px 0 0; }
+body.edit_recipe #recipe_edit_box { width: 97%; }
+body.edit_recipe #ingredient_edit_box { width: 97%; }
+body.edit_recipe #ingredient_group_input { width: 97%; }
+body.edit_recipe #ingredient_group_edit_box { width: 97%; }
+body.edit_recipe #edit_title {
+  margin-left: 10px;
+  vertical-align: top;
+}
+body.edit_recipe #ingredients_input {
+  width: 99%;
+  height: 170px;
+}
+body.edit_recipe #directions_input {
+  width: 98%;
+  height: 260px;
+}
+body.edit_recipe #ingredient_holder { margin-top: 10px; }
+body.edit_recipe ul:first-child .ingredient_group { padding-top: 0; }
+body.edit_recipe div.ingredient_group {
+  padding: 5px 0 5px 0;
+  cursor: move;
+}
+body.edit_recipe div.ingredient_group span {
+  font-size: 12px;
+  font-weight: normal;
+}
+body.edit_recipe #sub_header .submit_button {
+  float: none;
+  margin-top: 0;
+}
+body.edit_recipe li.ingredient {
+  padding-left: 35px;
+  text-indent: -35px;
+  cursor: move;
+}
+body.edit_recipe ul.sub li.ingredient { margin-left: 15px; }
+body.edit_recipe #buttons_holder { float: right; }
+body.recipe_index #main_content { padding: 0; }
+body.user_index #main_content { padding: 0; }
+body.new_store #categories div.category {
+  background: #6acaea;
+  float: left;
+  clear: both;
+  padding: 0 10px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  cursor: move;
+}
+body.new_store ol.steps {
+  font-size: 14px;
+  font-weight: bold;
+  color: #2d6b42;
+}
+body.new_store ol.steps > li {
+  list-style-type: decimal;
+  margin: 0 0 15px 30px;
+}
+body.new_store ol.steps p {
+  font-size: 12px;
+  font-weight: normal;
+  color: #000000;
+}
+body.new_store ol.steps ul {
+  font-size: 12px;
+  font-weight: normal;
+  color: #000000;
+}
+body.new_store ol.steps input {
+  font-size: 12px;
+  font-weight: normal;
+  color: #000000;
+}
+body.general_import {
+  text-align: left;
+  margin: 15px 15px 15px 10px;
+}
+body.general_import h1 {
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 0.5em;
+  margin-top: 2em;
+  margin-right: 0;
+}
+body.general_import #photos li { display: inline; }
+body.general_import #photos li img {
+  max-width: 100px;
+  max-height: 100px;
+  padding: 5px;
+  cursor: pointer;
+}
+body.general_import #photos li.selected img {
+  padding: 2px;
+  border: 3px solid #3688a3;
+}
+body.general_import textarea {
+  width: 100%;
+  height: 300px;
+}
+body.general_import .notice {
+  margin: 0 10px 10px 10px;
+  padding: 10px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  background-color: #ffffff;
+}

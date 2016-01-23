@@ -1,0 +1,192 @@
+<% use_stylesheet 'screen' %>
+
+<style type="text/css" media="screen">
+  div.pane {
+    position: fixed;
+    height: 100%;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  li.ingredient {
+    padding-left: 20px;
+    text-indent: -20px;
+  }
+  div.buttons {
+    text-align: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    padding: 5px 5px 0 5px;
+    background-color: #CBF2D8;
+    border-bottom: 1px solid #2D6B42;
+  }
+  div.recipe_box {
+    margin-bottom: 3px;
+    cursor: pointer;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  function removeRecipe(id) {
+    var parts = window.location.href.split('/');
+    var new_parts = [];
+    
+    $.each(parts[parts.length - 1].split(','), function() {
+      if (this.split(':')[0] != id.toString()) {
+        new_parts.push(this);
+      }
+    });
+    
+    window.location = '/recipe/cook/' + new_parts.join(',');
+  }
+
+  function addRecipe(id) {
+    var new_location = window.location.href
+    
+    if (new_location.indexOf(':') > -1) {
+      new_location += ','
+    }
+    
+    window.location = new_location + id + ":1"
+  }
+
+  function chooseRecipe() {
+    new Mealfire.Popup ({
+      width: 300,
+      height: 400,
+  	  title: "Add Recipe",
+  	  buttons: Mealfire.Buttons.closeOnly("Cancel"),
+  	  dataFetcher: function(content) {
+  	    var search_box = $('<input type="text" value="search">').css({
+  	      width: '250px',
+  	      marginBottom: '5px',
+  	      color: '#777'
+  	    });
+  	    
+  	    var holder = $('<div></div>').css({
+  	      overflowY: 'auto',
+  	      overflowX: 'hidden',
+  	      width: '258px',
+  	      height: '289px'
+  	    });
+  	    
+  	    search_box.focus(function() {
+  	      if ($(this).val() == 'search') {
+  	        $(this).val('');
+  	        $(this).css('color', '#000');
+  	      }
+  	    });
+  	    
+  	    search_box.keyup(function() {
+  	      holder.find('.recipe_box').each(function() {
+            var box = $(this);
+            var term = search_box.val();
+            var tag_match = false;
+            
+            if (box.data('tags')) {
+              $.each(box.data('tags'), function() {
+                if (this.indexOf(term) == 0) {
+                  tag_match = true;
+                }
+              });
+            }
+
+            if (term == '' || tag_match || box.text().toLowerCase().indexOf(term) > -1) {
+              box.css('display', 'block');
+            } else {
+              box.css('display', 'none');
+            }
+          });
+  	    });
+  	    
+  	    $.ajax({type: 'POST', dataType: 'json', cache: false,
+          url: '/calendar/_recipes?include_tags=1',
+          success: function(recipes) {
+            content.html('').append(search_box).append(holder);
+
+            $.each(recipes, function() {
+              var box = makeRecipeBox(this);
+              var recipe = this;
+              holder.append(box);
+              
+              box.click(function() {
+                addRecipe(recipe.i);
+              })
+            });
+            
+            holder.append('<p>&nbsp;</p>');
+          }
+        });
+  	  }
+	  });
+  }
+</script>
+
+<% i = 0 %>
+<% @recipes.each do |recipe| %>
+  <div class="buttons">
+    <a href="/calendar" class="submit_button">Home</a>
+    <a href="javascript:chooseRecipe();" class="submit_button">Add Recipe</a>
+  </div>
+  <div class="pane" style="width:<%= @width %>%;left:<%= i * @width %>%;top:26px;">
+    <div style="padding:0 8px;">
+      <h1 style="line-height:1.3em;text-align:center;"><%= recipe.name %></h1>
+      <div class="section_box">
+        <h2>
+          <div class="multipliers">
+            <a a href="<%= @make_link.call(recipe, 0.5) %>" class="multiplier <%= 'selected' if recipe.multiplier == 0.5 %>">&#189;x</a>
+            <a a href="<%= @make_link.call(recipe, 1) %>" class="multiplier <%= 'selected' if recipe.multiplier == 1 %>">1x</a>
+            <a a href="<%= @make_link.call(recipe, 2) %>" class="multiplier <%= 'selected' if recipe.multiplier == 2 %>">2x</a>
+          </div>
+          Ingredients
+        </h2>
+
+        <div class="section_content" style="padding-top:0;">
+          <div id="ingredient_holder" style="margin-left:10px;">
+            <ul>
+              <% recipe.ingredient_groups.each do |grp| %>
+                <% if !grp.name.blank? %>
+                  <li><div class="ingredient_group"><%= h grp.name %></div>
+                    <ul>
+                <% end %>
+                <% grp.ingredients.each do |i| %>
+                  <li class="ingredient">
+                    <%= ingredient_to_html(i,
+                        :html_fraction => true,
+                        :multiplier => recipe.multiplier) %>
+                  </li>
+                <% end %>
+                <% if !grp.name.blank? %>
+                    </ul>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section_box directions" style="margin-top:20px">
+        <h2>Cooking Directions</h2>
+
+        <div class="section_content">
+          <div id="directions_holder" class="no_styles">
+            <%= recipe.directions %>
+          </div>
+        </div>
+      </div>
+      
+      <% if @recipes.length > 1 %>
+        <div style="text-align:center;margin:1em;clear:both;">
+          <a href="javascript:removeRecipe(<%= recipe.id %>)">Remove Recipe</a>
+        </div>
+      <% end %>
+      
+      <div style="clear:both;margin-bottom:1em;">&nbsp;</div>
+    </div>
+  </div>
+  <% i += 1 %>
+<% end %>

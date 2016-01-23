@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= h @recipe.name %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css" media="screen">
+      #ingredients li { list-style: none; }
+      #ingredients ul { -webkit-padding-start: 0; }
+      #ingredients li.ingredient {
+        padding-left: 2em;
+        text-indent: -1em;
+      }
+      #ingredients li.ingredient_group { padding-left: .5em; }
+      .ingredient_group div {
+        font-size: 14px;
+        font-weight: bold;
+        color: #2D6B42;
+        margin: 10px 0;
+      }
+      h1, h2, h3 { font-size: 1.2em;}
+      h1.mealfire_header {
+        color: #2D6B42;
+        font-weight: bold;
+      }
+      #recipe_image {
+        float: right;
+        padding: 2px;
+        border: 1px solid #ccc;
+        margin-left: .5em;
+        width: 100px;
+        height: 100px;
+      }
+      #notice {
+        background: #FFF3F3;
+        border: 1px solid #FBDEDE;
+        padding: 5px 10px;
+      	text-align: center;
+      	-webkit-border-radius: 5px;
+      	margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>    
+    <div id="notice" style="display:<%= @next_day ? 'block' : 'none' %>;">
+      <% if @next_day %>
+        Scheduled for <%= @next_day %>.
+      <% end %>
+    </div>
+    
+    <% if @recipe.has_image %>
+      <img src="<%= @recipe.image_url(:small) %>" id="recipe_image" />
+    <% end %>
+    
+    <h1 class="mealfire_header">Ingredients</h1>
+
+    <div id="ingredients">
+      <ul>
+        <% @recipe.ingredient_groups.each do |grp| %>
+          <% if !grp.name.blank? %>
+            <li class="ingredient_group"><div><%= h grp.name %></div>
+              <ul>
+          <% end %>
+          <% grp.ingredients.each do |i| %>
+            <li class="ingredient">
+              <%= ingredient_to_html(i,
+                  :html_fraction => false,
+                  :multiplier => @recipe_day ? @recipe_day.multiplier : 1) %>
+            </li>
+          <% end %>
+          <% if !grp.name.blank? %>
+              </ul>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+
+    <h1 class="mealfire_header" style="margin-top:20px;">Cooking Directions</h1>
+
+    <div id="cooking_directions">
+      <%= @recipe.directions %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+default_run_options[:pty] = true
+
+task :deploy, :hosts => 'ubuntu@mealfire.com' do
+  run 'cd mealfire; git pull'
+  sudo '/etc/init.d/thin restart'
+end

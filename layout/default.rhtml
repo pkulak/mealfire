@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mealfire <%= @title ? ' - ' + @title : '' %></title>
+    <link rel="image_src" href="http://mealfire.com/images/mobile/icon.png" />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="expires" content="0" />
+    <meta name="generator" content="Ramaze <%= Ramaze::VERSION %>" />
+    <meta name="author" content="Phil Kulak" />
+    <meta name="date" content="<%= Time.now.iso8601 %>" />
+    <meta name="google-site-verification" content="3Y28QnCnMvXr5SVfLGZ3tDQw5zYrJnC1Xo2M5v7-xXc" />
+    <script type="text/javascript" charset="utf-8">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-10919584-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script');
+        ga.src = ('https:' == document.location.protocol ?
+            'https://ssl' : 'http://www') +
+            '.google-analytics.com/ga.js';
+        ga.setAttribute('async', 'true');
+        document.documentElement.firstChild.appendChild(ga);
+      })();
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-ui-1.8.5.custom.min.js"></script>
+    <script type="text/javascript" src="/js/library.js"></script>
+    <%= css 'screen' %>
+    <%= print_javascripts %>
+    <%= print_stylesheets %>
+    <% if flash[:notice] %>
+      <script type="text/javascript" charset="utf-8">
+        $(function() {
+          noticePopup = new Mealfire.DynamicPopup({
+            title: '<%= js_escape(flash[:notice][0]) %>',
+            data: '<%= js_escape(flash[:notice][1]) %>',
+            width: 400,
+            buttons: Mealfire.Buttons.closeOnly("Okay")
+          });
+          
+          <% unless flash[:notice][2] && flash[:notice][2][:important] %>
+            setTimeout(function() {
+              noticePopup.close();
+            }, 8000);
+          <% end %>
+        });
+      </script>
+    <% end %>
+    <!--[if lt IE 8]>
+      <style type="text/css" media="screen">
+        #header li.auth_link { margin-top: -40px; }
+      </style>
+    <![endif]-->
+    <!--[if IE 6]>
+      <style type="text/css" media="screen">
+        div.northwest, div.northeast, div.southwest, div.southeast, div.north, div.south, div.east, div.west {
+          background-image: none !important;
+          background-color: #aaa;
+        }
+      </style>
+    <![endif]-->
+    <script>
+      // HOTFIX: We can't upgrade to jQuery UI 1.8.6 (yet)
+      // This hotfix makes older versions of jQuery UI drag-and-drop work in IE9
+      (function($){var a=$.ui.mouse.prototype._mouseMove;$.ui.mouse.prototype._mouseMove=function(b){if($.browser.msie&&document.documentMode>=9){b.button=1};a.apply(this,[b]);}}(jQuery));
+    </script>
+  </head>
+  <body <%= "class='#{@body_class}'" if @body_class %> <%= 'itemscope itemtype="http://data-vocabulary.org/Recipe"' if @body_recipe %>>
+    <% if @top_banner %>
+      <%= @top_banner %>
+    <% end %>
+    <div id="header">
+      <a href="/calendar"><img src="/images/logo_30.png"/></a>
+      <h1><a href="/calendar">Mealfire</a></h1>
+      <ul id="header_links">
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/recipe">Recipes</a></li>
+        <li><a href="/store">Stores</a></li>
+        <li><a href="/extras">Extra Items</a></li>
+        <% if current_user.authed? %>
+          <li class="header_search">
+            <form method="get" action="/recipe">
+              <input type="text" name="q">
+              <input type="submit" class="submit_button" value="go">
+            </form>
+          </li>
+        <% else %>
+          <li class="auth_link"><a href="/register">Register</a></li>
+          <li class="auth_link"><a href="/login">Login</a></li>
+        <% end %>
+      </ul>
+    </div>
+    <div id="content">
+      <%= @content %>
+      <div style="clear:both;"></div>
+    </div>
+    <div style="text-align:center;margin:5px 0;">
+      <% if current_user.authed? %>
+        <a title="Your Account" href="/account">Your Account</a> |
+        <a title="Your Profile" href="/user/<%= current_user.id %>">Your Profile</a> |
+        <a title="Logout" href="/logout">Logout <%= current_user.name %></a> |
+      <% end %>
+      <a title="Contact Us" href="/contact">Contact</a> |
+      <a title="Contact Us" href="/bookmarklet">Bookmarklet</a> |
+      <a title="Contact Us" href="/calendar/share">Share Calendar</a> |
+      <a title="FAQ" href="http://blog.mealfire.com/2010/12/31/faq.html">FAQ</a> |
+      <a title="About Mealfire" href="/about">About</a>
+      <div style="margin-top:5px;margin-bottom:10px;">
+        <% if current_user.authed? && current_user.transaction_id == 'DONATION' %>
+          Thanks for donating!
+        <% else %>
+          Like this service?
+          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="display:inline;">
+            <input type="hidden" name="cmd" value="_donations">
+            <input type="hidden" name="business" value="phil@mealfire.com">
+            <input type="hidden" name="lc" value="US">
+            <input type="hidden" name="item_name" value="Mealfire Donation">
+            <input type="hidden" name="no_note" value="0">
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest">
+            <input type="image"style="margin-bottom:-7px;" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+          </form>
+        <% end %>
+      </div>
+    </div>
+  </body>
+</html>

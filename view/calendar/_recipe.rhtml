@@ -1,0 +1,59 @@
+<% multiplier = @recipe_day ? @recipe_day.multiplier : 1 %>
+
+<style type="text/css" media="screen">
+  li.ingredient {
+    padding-left: 20px;
+    text-indent: -20px;
+  }
+</style>
+
+<div id="ingredients" class="section_box">
+  <h2>
+    <% if @recipe_day %>
+      <div class="multipliers">
+        <div id="multiply_by_half" onclick="multiplyBy(<%= @recipe_day.id %>, 0.5)" class="multiplier <%= 'selected' if @recipe_day.multiplier == 0.5 %>">&#189;x</div>
+        <div id="multiply_by_one" onclick="multiplyBy(<%= @recipe_day.id %>, 1)" class="multiplier <%= 'selected' if @recipe_day.multiplier == 1 %>">1x</div>
+        <div id="multiply_by_two" onclick="multiplyBy(<%= @recipe_day.id %>, 2)" class="multiplier <%= 'selected' if @recipe_day.multiplier == 2 %>">2x</div>
+        <div id="custom-multiplier" class="multiplier <%= 'selected' unless [0.5, 1, 2].include?(@recipe_day.multiplier) %>">?</div>
+      </div>
+    <% end %>
+    Ingredients
+  </h2>
+
+  <div class="section_content" style="padding-top:0;">
+    <%= ingredient_list(@recipe, multiplier) %>
+  </div>
+</div>
+<div style="clear:both;"></div>
+
+<% if !@recipe.directions.blank? %>
+  <div class="section_box directions" style="margin-top:20px">
+    <% if @recipe.side_dish %>
+      <h2>Notes</h2>
+    <% else %>
+      <h2>Cooking Directions</h2>
+    <% end %>
+
+    <div class="section_content">
+      <div id="directions_holder" class="no_styles">
+        <%= @recipe.directions %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if @recipe_day %>
+  <script type="text/javascript" charset="utf-8">
+    window.multiplier = <%= multiplier %>;
+
+    Mealfire.multiplierButton({
+      button: '#custom-multiplier',
+      parent: '#ingredients',
+      current: <%= multiplier %>,
+      top: '-7px',
+      onChoose: function(mult) {
+        multiplyBy(<%= @recipe_day.id %>, mult);
+      }
+    });
+  </script>
+<% end %>

@@ -1,0 +1,14 @@
+<div id="sub_header">
+  <h1>Can't View Imported Recipe</h1>
+</div>
+
+<div id="main_content">
+  <img src="/images/homer_error.png" style="float:left;margin-bottom:10px;">
+  <p style="float:right;width:450px;">
+    Sorry, but you can't view that recipe at Mealfire. You can, however,
+    check it out at the source (<%= h try_host(@recipe.imported_from) %>):
+  </p>
+  <p style="float:right;width:450px;font-size:24px;line-height:30px;font-weight:bold;">
+    <a href="<%= @recipe.imported_from %>" target="top"><%= h @recipe.name %></a>
+  </p>
+</div>

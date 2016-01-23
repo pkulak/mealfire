@@ -1,0 +1,77 @@
+<style type="text/css" media="screen">
+  td {
+    padding: 3px 5px;
+  }
+</style>
+
+<div id="sub_header">
+  <h1>Your Account</h1>
+</div>
+
+<div id="main_content">
+  <div style="width:49%;float:left;">
+    <h1 style="margin:0 0 15px 0;">Change Password</h1>
+  
+    <form method="post" action="/change_password">
+      <table>
+        <tr>
+          <td style="width:120px;"><label for="name">Current Password:</label></td>
+          <td><input type="password" name="current"/></td>
+        </tr><tr>
+          <td><label for="email">New Password:</label></td>
+          <td><input type="password" name="new"/></td>
+        </tr>
+      </table>
+      <input type="submit" class="submit_button" value="submit" style="margin-top:15px;"/>
+    </form>
+  </div>
+  
+  <div style="width:49%;float:right;">
+    <h1 style="margin:0 0 15px 0;">Change Email Address</h1>
+  
+    <form method="post" action="/change_email">
+      <table>
+        <tr>
+          <td><label for="name">Password:</label></td>
+          <td><input type="password" name="password"/></td>
+        </tr><tr>
+          <td><label for="name">Email Address:</label></td>
+          <td><input type="text" name="email" value="<%= current_user.email %>"/></td>
+        </tr>
+      </table>
+      <input type="submit" class="submit_button" value="submit" style="margin-top:15px;"/>
+    </form>
+  </div>
+  
+  <div style="width:49%;float:left;clear:both;">
+    <h1 style="margin-top:25px;">Other Info</h1>
+  
+    <form method="post" action="/change_name">
+      <table>
+        <tr>
+          <td style="width:120px;"><label for="name">Name:</label></td>
+          <td><input type="text" name="name" value="<%= current_user.name %>"/></td>
+        </tr><tr>
+          <td style="width:120px;"><label for="timezone">Timezone:</label></td>
+          <td>
+            <select name="timezone" id="timezone">
+              <% TZInfo::Timezone.all.each do |tz| %>
+                <option name="<%= tz.identifier %>" <%= 'selected' if tz.identifier == current_user.timezone %>><%= tz.identifier %></option>
+              <% end %>
+            </select>
+          </td>
+        </tr><tr>
+          <td style="width:120px;"><label for="rate_recipes">Rate Recipes:</label></td>
+          <td>
+            <select name="rate_recipes" id="rate_recipes">
+              <option value="true" <%= 'selected' if current_user.rate_recipes %>>Yes</option>
+              <option value="false" <%= 'selected' if !current_user.rate_recipes %>>No</option>
+            </select>
+          </td>
+      </table>
+      <input type="submit" class="submit_button" value="submit" style="margin-top:15px;"/>
+    </form>
+  </div>
+  
+  <div style="height:10px;clear:both;"></div>
+</div>

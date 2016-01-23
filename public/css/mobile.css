@@ -1,0 +1,108 @@
+#ingredients {
+  margin-left: 20px;
+  margin-top: 15px;
+}
+
+#cooking_directions {
+  margin-top: 15px;
+  margin-left: 20px;
+}
+
+#recipe_holder {
+  margin-right: 10px;
+}
+
+#recipe_holder p {
+  margin: 10px 0;
+}
+
+#recipe_holder ul, #recipe_holder ol {
+  background: none;
+  border: none;
+}
+
+#recipe_holder ul li {
+  list-style: disc;
+}
+
+#recipe_holder ol li {
+  list-style: decimal;
+}
+
+#recipe_holder li {
+  padding: 0;
+  border: 0;
+  margin-left: 30px;
+  color: #000;
+  font-weight: normal;
+  margin-bottom: 3px;
+}
+
+#recipe_holder li.ingredient_group {
+  list-style: none;
+  margin-left: 0;
+  font-weight: bold;
+  color: #4C566C;
+}
+
+#recipe_holder li.ingredient_group div {
+  margin: 10px 0;
+}
+
+#shopping_list_holder img {
+  float: right;
+  margin-top: -2px;
+  position: relative;
+}
+
+#saved_list_holder li.category {
+  color: #000;
+}
+
+#saved_list_holder li.ingredient {
+  padding-left: 35px;
+  font-weight: normal;
+}
+
+#saved_list_holder li.deleted {
+  background-image: url('/images/check_mark.png');
+  background-repeat: no-repeat;
+  background-position: 3px 10px;
+}
+
+#loading_img {
+  -webkit-animation-duration: 0.75s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: loadingImageAnimation;
+  -webkit-animation-timing-function: linear;
+  width: 30px;
+  height: 30px;
+}
+
+@-webkit-keyframes loadingImageAnimation {
+  0%      {-webkit-transform: rotate(0deg);}
+  8.32%   {-webkit-transform:rotate(0deg);}
+  8.33%   {-webkit-transform:rotate(30deg);}
+  16.66%  {-webkit-transform:rotate(30deg);}
+  16.67%  {-webkit-transform:rotate(60deg);}
+  24.99%  {-webkit-transform:rotate(60deg);}
+  25%     {-webkit-transform:rotate(90deg);}
+  33.32%  {-webkit-transform:rotate(90deg);}
+  33.33%  {-webkit-transform:rotate(120deg);}
+  41.66%  {-webkit-transform:rotate(120deg);}
+  41.67%  {-webkit-transform:rotate(150deg);}
+  49.99%  {-webkit-transform:rotate(150deg);}
+  50%     {-webkit-transform:rotate(180deg);}
+  58.32%  {-webkit-transform:rotate(180deg);}
+  58.33%  {-webkit-transform:rotate(210deg);}
+  66.66%  {-webkit-transform:rotate(210deg);}
+  66.67%  {-webkit-transform:rotate(240deg);}
+  74.99%  {-webkit-transform:rotate(240deg);}
+  75%     {-webkit-transform:rotate(270deg);}
+  83.32%  {-webkit-transform:rotate(270deg);}
+  83.33%  {-webkit-transform:rotate(300deg);}
+  91.66%  {-webkit-transform:rotate(300deg);}
+  91.67%  {-webkit-transform:rotate(330deg);}
+  99.99%  {-webkit-transform:rotate(330deg);}
+  100%    {-webkit-transform:rotate(360deg);}
+}

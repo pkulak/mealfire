@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mealfire Import</title>
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/bookmarklet.general_import.js"></script>
+  <script type="text/javascript" src="/js/tiny_mce/jquery.tinymce.js"></script>
+  <%= css 'screen' %>
+</head>
+<body class="general_import">
+  <div class="notice">
+    Unfortunately this recipe page is not directly supported by Mealfire. However, you can
+    use the form below to import this recipe by copying and pasting the ingredients and
+    directions.
+  </div>
+  
+  <form method="post" accept-charset="UTF-8">
+    <input type="hidden" name="url" value="<%= request[:url] %>">
+    
+    <h1>Choose a Title</h1>
+    <input type="text" id="title" name="title" value="<%= h request[:title] %>" style="width:100%">
+
+    <% if @photos.length > 0 %>
+      <input type="hidden" id="photo" name="photo" value="<%= @photos[0] %>">
+    
+      <h1>Choose a Photo</h1>
+      <ol id="photos">
+        <% @photos.each do |src| %>
+          <li <%= 'class="selected"' if @photos.first == src   %>><img src="<%= src %>"></li>
+        <% end %>
+      </ol>
+    <% end %>
+  
+    <h1>Paste the Ingredients Here</h1>
+    <textarea id="ingredients" name="ingredients"></textarea>
+  
+    <h1>Paste the Cooking Directions Here</h1>
+    <textarea id="directions" name="directions"></textarea>
+  
+    <div style="margin-top:2em;text-align:center">
+      <input type="submit" name="submit" id="submit_button" value="Import Recipe" class="submit_button">
+    </div>
+  <form>
+</body>
+</html>

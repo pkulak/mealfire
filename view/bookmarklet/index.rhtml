@@ -1,0 +1,43 @@
+<% @title = 'Bookmarklet' %>
+
+<style type="text/css" media="screen">
+  #sites li {
+    margin-left: 30px;
+    list-style: disc;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    if (navigator.userAgent.indexOf('MSIE') > 0) {
+      $('#directions').html('right click on it, then select "Add to Bookmarks"');
+    }
+  })
+</script>
+
+<div id="sub_header">
+  <h1>Bookmarklet</h1>
+</div>
+
+<div id="main_content">
+  <p style="margin-top:0;">Use the bookmarklet below to grab most recipes on the internet. Just
+    <span id="directions">drag it to your bookmarks toolbar</span> then, whenever
+    you are looking at a recipe you'd like to import, click the new bookmark. It's as easy as that!</p>
+    
+    <a class="submit_button" style="cursor:move;" onclick="buttonClicked();return false;" href="<%= bookmarklet_source %>">Save to Mealfire</a>
+
+    <div style="margin-top:20px">
+      *Supported sites:
+      <ul id="sites">
+        <li><a href="http://myrecipes.com">My Recipes</a></li>
+        <li><a href="http://allrecipes.com">All Recipes</a></li>
+        <li><a href="http://epicurious.com">Epicurious</a></li>
+        <li><a href="http://food.com">Food.com</a></li>
+        <li><a href="http://foodnetwork.com">Food Network</a></li>
+        <li><a href="http://simplyrecipes.com">Simply Recipes</a></li>
+        <li><a href="http://marthastewart.com">Martha Stewart</a></li>
+        <li><a href="http://weightwatchers.com">Weight Watchers</a></li>
+        <li><a href="http://www.google.com/landing/recipes/">Google Recipe Search</a> (Or any site with <a href="http://www.google.com/support/webmasters/bin/answer.py?answer=99170">rich snippets</a>.)
+      </ul>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<script type="text/javascript" charset="utf-8">
+  $(function () {
+    setTimeout(updateTimer, 1000);
+  })
+  
+  function updateTimer() {
+    var time = parseInt($('#timer').text());
+    
+    if (time > 1) {
+      time -= 1;
+      $('#timer').text(time);
+      setTimeout(updateTimer, 1000);
+    } else {
+      window.location = '/calendar';
+    }
+  }
+</script>
+
+<div id="sub_header">
+  <h1>Registration Complete</h1>
+</div>
+
+<div id="main_content">
+  <p style="margin:0;">
+    Thank you for registering with Mealfire! In <span id="timer">20</span> seconds we'll forward
+    you to your calendar, or you can <a href="/calendar">click here</a> to continue.
+  </p>
+</div>

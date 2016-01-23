@@ -1,0 +1,9 @@
+<ul style="margin:5px 0;">
+  <% @recipe.recipe_tags.each do |recipe_tag| %>
+    <li class="tag" style="float:left;margin-left:10px;">
+      <a class="tiny_delete_button" href="javascript:deleteTag(<%= recipe_tag.id %>);"></a>
+      <%= h recipe_tag.tag.name %>
+    </li>
+  <% end %>
+</ul>
+<div style="clear:both;"></div>

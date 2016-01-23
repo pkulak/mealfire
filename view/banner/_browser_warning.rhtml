@@ -1,0 +1,28 @@
+<script type="text/javascript" charset="utf-8">
+  function closeClicked() {
+    $.post("/close_browser_warning", function() {
+      $('#top_banner').slideUp('fast');
+    });
+  }
+</script>
+
+<div id="top_banner" style="text-align:center;">
+  <img class="close" onclick="closeClicked();" src="/images/close.jpg"/>
+  <div style="width:850px;margin:auto;margin-bottom:7px;">
+    You are currently using a browser that is <strong>not supported</strong> by Mealfire.
+    Mealfire currently only supports Internet Explorer 8 and above, as well as Chrome, Safari
+    and Firefox. Please click on an icon below to upgrade your browser.
+  </div>
+  <a style="margin-right:10px;text-decoration:none;" href="http://windows.microsoft.com/en-US/internet-explorer/downloads/ie">
+    <img src="/images/browser_icons/ie.png">
+  </a>
+  <a style="margin-right:10px;text-decoration:none;" href="http://www.google.com/chrome/">
+    <img src="/images/browser_icons/chrome.png">
+  </a>
+  <a style="margin-right:10px;text-decoration:none;" href="http://www.apple.com/safari/">
+    <img src="/images/browser_icons/safari.png">
+  </a>
+  <a style="text-decoration:none;" href="http://www.mozilla.com/">
+    <img src="/images/browser_icons/firefox.png">
+  </a>
+</div>

@@ -1,0 +1,132 @@
+<% @body_recipe = true %>
+
+<style type="text/css" media="screen">
+  h2 {
+    font-size: 1.2em;
+  }
+  #left_side {
+    float: left;
+    width: 500px;
+    margin-bottom: 10px;
+  }
+  #right_side {
+    float: right;
+    width: 250px;
+    margin-bottom: 10px;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    Mealfire.multiplierButton({
+      button: '#custom-multiplier',
+      parent: '#ingredients',
+      current: <%= @multiplier %>,
+      top: '-7px',
+      onChoose: function(mult) {
+        window.location = '/recipe/view/rcp_<%= @recipe.id %>?multiplier=' + mult;
+      }
+    });
+  });
+
+  <% if current_user.authed? %>
+    function collect() {
+      window.location = "/recipe/add_share/<%= @rand %>";
+      return false;
+    }
+  <% else %>
+    function collect() {
+      var buttons = []
+      
+      buttons.push({
+        text: "Login First",
+        click: function () {
+          window.location = "/recipe/login_to_collect_share/<%= @rand %>";
+          return false;
+        }
+      });
+      
+      buttons.push({
+        text: "Collect This Recipe Anyway",
+        click: function() {
+          window.location = "/recipe/add_share/<%= @rand %>";
+          return false;
+        }
+      });
+      
+      var data = $('<p style="margin:0;"></p>');
+      data.append("You're currently logged in as a <em>guest user</em>. You can collect this " +
+        "recipe now, then register later, or, if you already have a Mealfire account, please " +
+        "login first.")
+      
+      new Mealfire.Popup ({
+    	  data: data,
+    	  height: 150,
+    	  width: 500,
+    	  title: "Not Logged In",
+    	  buttons: buttons
+  	  });
+    }
+  <% end %>
+</script>
+
+<div id="sub_header">
+  <a href="/recipe/print/<%= @rand %>?multiplier=<%= @multiplier %>" class="submit_button">print</a>
+  <a href="javascript:collect();" class="submit_button" style="margin-right:5px;">add to my recipes</a>
+  <h1>
+    <% if @recipe.user.authed? %>
+      <a href="<%= user_link(@recipe.user) %>"><%= h @recipe.user.name %></a> »
+    <% end %>
+    <span itemprop="name"><%= h @recipe.name %></span></h1>
+</div>
+
+<div id="main_content">
+  <div id="left_side" class="clearfix">
+    <div id="ingredients" class="section_box">
+      <h2>
+        <div class="multipliers">
+          <a href="<%= recipe_url(@recipe, multiplier: 0.5, public: true) %>" class="multiplier <%= 'selected' if @multiplier == 0.5 %>">&#189;x</a>
+          <a href="<%= recipe_url(@recipe, multiplier: 1, public: true) %>" class="multiplier <%= 'selected' if @multiplier == 1 %>">1x</a>
+          <a href="<%= recipe_url(@recipe, multiplier: 2, public: true) %>" class="multiplier <%= 'selected' if @multiplier == 2 %>">2x</a>
+          <a id="custom-multiplier" href="" onclick="return false;" class="multiplier <%= 'selected' unless [0.5, 1, 2].include?(@multiplier) %>">?</a>
+        </div>
+        Ingredients
+      </h2>
+
+      <div class="section_content" style="padding-top:0;">
+        <%= ingredient_list(@recipe, @multiplier) %>
+      </div>
+    </div>
+    <div style="clear:both;"></div>
+
+    <div class="section_box directions" style="margin-top:20px">
+      <h2>Cooking Directions</h2>
+
+      <div class="section_content">
+        <div id="directions_holder" class="no_styles" itemprop="instructions">
+          <%= @recipe.directions %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="right_side" class="clearfix">
+    <% if @recipe.has_image %>
+      <div style="text-align:center;">
+        <img itemprop="photo" src="<%= @recipe.image_url %>" id="recipe_image" style="margin-bottom:10px;"/>
+      </div>
+    <% end %>
+    
+    <script type="text/javascript"><!--
+      google_ad_client = "pub-3622625062678022";
+      /* 250x250, created 5/16/10 */
+      google_ad_slot = "1327741900";
+      google_ad_width = 250;
+      google_ad_height = 250;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
+</div>

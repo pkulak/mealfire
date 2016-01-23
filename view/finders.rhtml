@@ -1,0 +1,15 @@
+<div id="sub_header">
+  <h1>Category Finders</h1>
+</div>
+
+<div id="main_content">
+  <table>
+    <% @finders.each do |finder| %>
+      <tr>
+        <td style="padding-right:15px"><%= h finder.expression %></td>
+        <td style="padding-right:15px"><%= finder.category.name %></td>
+        <td><a href="<%= "/delete_finder?id=#{finder.id}" %>">Delete</a></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

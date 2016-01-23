@@ -1,0 +1,23 @@
+<div id="sub_header">
+  <h1>Share</h1>
+</div>
+
+<div id="main_content">
+  <% if current_user.authed? %>
+    <p class="first">Most calendar applications (Google Calendar, Apple iCal, 30 Boxes, etc)
+      will let you subscribe to an external calendar. To see your Mealfire
+      recipes in your preferred calendaring application, you can use the
+      following URL:</p>
+    
+    <p style="font-size:1.5em;color:#666;text-align:center;margin-top:20px;">
+      <a href="webcal://mealfire.com/calendar/<%= current_user.authed_user.salt %>.ics">
+        webcal://mealfire.com/calendar/<%= current_user.authed_user.salt %>.ics
+      </a>
+    </p>
+  <% else %>
+    <p class="first">Most calendar applications (Google Calendar, Apple iCal, 30 Boxes, etc)
+      will let you subscribe to an external calendar. Please <a href="/register">register</a>
+      to get a url that you can use to see you Mealfire recipes in your preferred
+      calendaring application.</p>
+  <% end %>
+</div>

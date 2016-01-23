@@ -1,0 +1,68 @@
+<% @title = 'About' %>
+
+<style type="text/css" media="screen">
+  #screenshots {
+    margin-top: 30px;
+    text-align: center;
+  }
+  #screen2 {
+    margin: 0 50px;
+  }
+  form.popup td {
+    text-align: center;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  function showFull(number) {
+    new Mealfire.Popup({
+      title: "Mealfire Mobile",
+      height: 600,
+      width: 375,
+      data: '<img src="/images/screenshots/mealfire-iphone_' + number + '.png"/>',
+      buttons: Mealfire.Buttons.closeOnly()
+    });
+    
+    return false;
+  }
+</script>
+
+<div id="sub_header">
+  <h1>About</h1>
+</div>
+
+<div id="main_content">
+  <p style="margin-top:0;">Mealfire is a meal planning service designed to make it easier for you to prepare and eat
+    more meals at home. What keeps most of us from eating at home is a lack of preparation. If
+    we don't know what we're eating by the time we're done with work, it's probably
+    too late. The trick is planning for several days in advance and getting all the shopping
+    for those days completed in one trip to the store.</p>
+  
+  <p>That's where Mealfire comes in. Just <a href="/recipe">enter the recipes</a> you like to make
+    the most, then use the <a href="/calendar">calendar</a> to schedule them. Mealfire will combine
+    all the ingredients from all your recipes into one list that you can print out and take to the
+    store. You can even maintain a separate <a href="/shop">shopping list</a> of items not related to any specific
+    recipe (eggs, milk, bread, etc) and those items will be added to the end of any list you create.</p>
+  
+  <p>You don't need to register to try out Mealfire, so go ahead and <a href="/recipe/begin">get started</a>
+    right away. Don't forget to <a href="/register">register</a> before you leave, however, or all your
+    information will be lost (we can't log you in later if we don't know who you are).</p>
+    
+  <h2>Mealfire Mobile</h2>
+    
+  <p>If you have an iPhone, just point your browser to mealfire.com to use the mobile site. You can use the
+    mobile site to quickly add extra items to your shopping list, view recipes, or view saved shopping lists.
+    Only registered users can use the mobile site, so here are some screenshots to give you an idea:</p>
+  
+  <p id="screenshots">
+    <a id="screen1" href="/images/screenshots/mealfire-iphone_1.png" title="Mealfire Mobile" onclick="return showFull(1);">
+      <img src="/images/screenshots/mealfire-iphone_1_thumb.png"/>
+    </a>
+    <a id="screen2" href="/images/screenshots/mealfire-iphone_2.png" title="Mealfire Mobile" onclick="return showFull(2);">
+      <img src="/images/screenshots/mealfire-iphone_2_thumb.png"/>
+    </a>
+    <a id="screen3" href="/images/screenshots/mealfire-iphone_3.png" title="Mealfire Mobile" onclick="return showFull(3);">
+      <img src="/images/screenshots/mealfire-iphone_3_thumb.png"/>
+    </a>
+  </p>
+</div>

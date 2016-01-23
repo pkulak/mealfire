@@ -1,0 +1,99 @@
+<style type="text/css" media="screen">
+  ol.sales_pitch {
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2D6B42;
+  }
+  ol.sales_pitch li {
+    list-style-type: decimal;
+    margin: 0 0 15px 30px;
+  }
+  ol.sales_pitch span {
+    font-size: 12px;
+    font-weight: normal;
+    color: #000;
+  }
+  #main_content .section_box, .ad-sense {
+    width: 300px;
+    float: right;
+    margin: 0 0 20px 20px;
+    clear: both;
+  }
+  #recently_collected {
+    width: 475px;
+  }
+  #recently_collected img {
+    margin: 0 2px 2px 0;
+    padding: 2px;
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+  }
+  #login_form label {
+    white-space: nowrap;
+  }
+</style>
+
+<div id="sub_header">
+  <h1>Welcome to Mealfire!</h1>
+</div>
+
+<div id="main_content">
+  <div class="section_box">
+    <h2>Get Started</h2>
+  
+    <div class="section_content">
+      <p class="first">Go ahead and try it out right now. There's no need to register, you can do that later:</p>
+  
+      <p style="margin:15px 0 5px 0;">
+        <a class="submit_button" href="/bookmarklet">Grab the Bookmarklet</a>
+        <a class="submit_button" href="/recipe/begin">Create a Recipe</a>
+      </p>
+    </div>
+  </div>
+  
+  <div class="section_box">
+    <h2>Registered Users</h2>
+  
+    <div class="section_content">
+      <form id="login_form" method="post" action="/login">
+        <table>
+          <tr>
+            <td><label for="email">Email Address:</label></td>
+            <td><input type="text" name="email" id="email" value="<%= h request[:email] %>" style="width:165px;" /></td>
+          </tr><tr>
+            <td><label for="password">Password:</label></td>
+            <td><input type="password" name="password" id="password" value="<%= h request[:password] %>" style="width:165px;" /></td>
+          </tr>
+        </table>
+        <input type="submit" class="submit_button" value="login"/>
+        <a href="/password">I forgot my password</a>
+      </form>
+    </div>
+  </div>
+  
+  <p style="margin-top:0;">Mealfire is a meal planning service designed to make it easier for you to prepare and eat
+    more meals at home. Mealfire lets you:
+    
+    <ol class="sales_pitch">
+      <li><span>Keep all your favorite recipes in one place, entered either
+        <a href="/recipe/begin">by hand</a>, or automatically imported from 
+        <a href="/bookmarklet">recipe sites across the web</a>.</span></li>
+      <li><span><a href="/calendar">Schedule</a> your recipes for the days you'd like to eat them.</span></li>
+      <li><span>Create shopping lists by adding up all your ingredients (plus anything
+        <a href="/extras">extra</a>), arranged by where they are likely to be in the store.</span></li>
+    </ol>
+  </p>
+  
+  <h1 style="margin-top:20px;">Recently Collected</h1>
+  <p>Here's what Mealfire users are collecting right now:</p>
+  
+  <p id="recently_collected">
+    <% Recipe.recently_collected.each do |recipe| %>
+      <a href="<%= h recipe.imported_from %>" target="top">
+        <img src="<%= recipe.image_url(:small) %>" alt="<%= h recipe.name %>" title="<%= h recipe.name %>">
+      </a>
+    <% end %>
+  </p>
+</div>

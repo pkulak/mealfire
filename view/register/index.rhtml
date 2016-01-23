@@ -1,0 +1,48 @@
+<style type="text/css" media="screen">
+  td {
+    padding: 3px 5px;
+  }
+  #agreement {
+    padding-left: 10px;
+    font-size: 11px;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    new Mealfire.FormFieldPopup({
+      field: $('#name'),
+      content: "Hi, I'm Mealfire. And you are&#x2026;"
+    });
+    new Mealfire.FormFieldPopup({
+      field: $('#email'),
+      content: "This is what you'll use to log in later. We won't give it " +
+        "out to anyone, and you won't need to verify it."
+    });
+  });
+</script>
+
+<div id="sub_header">
+  <h1>Register</h1>
+</div>
+
+<div id="main_content">
+  <form method="post" action="/register">
+    <table>
+      <tr>
+        <td><label for="name">First Name:</label></td>
+        <td><input type="text" name="name" id="name" value="<%= h request[:name] %>"/></td>
+      </tr><tr>
+        <td><label for="email">Email Address:</label></td>
+        <td><input type="text" name="email" id="email" value="<%= h request[:email] %>"/></td>
+      </tr><tr>
+        <td><label for="password">Password:</label></td>
+        <td><input type="password" name="password" id="password" value="<%= h request[:password] %>"/></td>
+      </tr>
+    </table>
+    <p>
+      <input type="submit" class="submit_button" value="register"/>
+      <span id="agreement">By joining Mealfire, you agree to our <a href="/tos">Terms of Service</a>.</span>
+    </p>
+  </form>
+</div>
